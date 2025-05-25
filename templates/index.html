@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+	<script>
+		var updateView = function() {
+			fetch("/eltena_fetcher", { "method": "GET" })
+				.then(response => response.text())
+				.then(view => document.getElementById("viewer").innerHTML = view)
+		}
+		updateView();
+		setInterval(updateView, {{ upd|int *1000 }});
+	</script>
+	<head>
+		<meta charset="utf-8" />
+		<title>Eltena</title>
+	</head>
+	<body>
+		<table id="viewer">
+		</table>
+	</body>
+</html>
