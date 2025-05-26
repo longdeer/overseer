@@ -1,0 +1,13 @@
+h1 {
+	text-align: center;
+}
+div.snmp-view {
+	display: inline-block;
+	border: 2px solid black;
+}
+td {
+	text-align: center;
+	border: 2px solid black;
+	padding: 5px;
+	cursor: help;
+}

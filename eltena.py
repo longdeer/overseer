@@ -30,6 +30,7 @@ async def get_eltena(addr :str):
 		ObjectType(ObjectIdentity("XPPC-MIB", "upsSmartBatteryCapacity", 0)),
 		ObjectType(ObjectIdentity("XPPC-MIB", "upsSmartBatteryTemperature", 0)),
 		ObjectType(ObjectIdentity("XPPC-MIB", "upsSmartInputFrequency", 0)),
+		ObjectType(ObjectIdentity("XPPC-MIB", "upsSmartBatteryRunTimeRemaining", 0)),
 	)
 
 	if errorIndication:	print(errorIndication)

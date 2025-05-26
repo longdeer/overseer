@@ -15,10 +15,14 @@ app = Flask(__name__)
 
 
 @app.route("/get_snmp_eltena")
-async def get_snmp_eltena():
+async def get_snmp_eltena(): return render_template(
 
-	data = await get_eltena("192.168.160.253")
-	return render_template("viewer.html", data=data)
+	"viewer.html",
+	data=[
+		[ "CC", await get_eltena("192.168.160.253") ],
+		[ "Rx", await get_eltena("192.168.160.254") ]
+	]
+)
 
 
 

@@ -1,16 +1,26 @@
-<tr>
-	<td>input</td>
-	<td>battery</td>
-	<td>load</td>
-	<td>capacity</td>
-	<td>temperature</td>
-	<td>frequency</td>
-</tr>
-<tr>
-	<td>{{ data[0]|int /10 }} V</td>
-	<td>{{ data[1]|int *10 }} V</td>
-	<td>{{ data[2] }} %</td>
-	<td>{{ data[3] }} %</td>
-	<td>{{ data[4]|int /10 }} C</td>
-	<td>{{ data[5]|int /10 }} Hz</td>
-</tr>
+{% for device in data %}
+	<div class="snmp-view">
+		<h1>{{ device[0] }}</h1>
+		<table>
+			<tr>
+				<td title="input VAC">input</td>
+				<td title="batteries VDC">battery</td>
+				<td title="output load in percentage of remaining capacity">load</td>
+				<td title="batteries remaining capacity percentage">capacity</td>
+				<td title="batteries temperature">temperature</td>
+				<td title="input voltage frequency">frequency</td>
+				<td title="batteries time remaining in seconds (0 if on input voltage)">time</td>
+			</tr>
+			<tr>
+				<td title="input VAC">{{ device[1][0]|int /10 }} V</td>
+				<td title="batteries VDC">{{ device[1][1]|int *10 }} V</td>
+				<td title="output load in percentage of remaining capacity">{{ device[1][2] }} %</td>
+				<td title="batteries remaining capacity percentage">{{ device[1][3] }} %</td>
+				<td title="batteries temperature">{{ device[1][4]|int /10 }} C</td>
+				<td title="input voltage frequency">{{ device[1][5]|int /10 }} Hz</td>
+				<td title="batteries time remaining in seconds (0 if on input voltage)">{{ device[1][6] }}</td>
+			</tr>
+		</table>
+	</div>
+	<br>
+{% endfor %}
