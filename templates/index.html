@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-	<script>
-		var updateView = function() {
-			fetch("/get_snmp_eltena", { "method": "GET" })
-				.then(response => response.text())
-				.then(view => document.getElementById("viewer").innerHTML = view)
-		}
-		updateView();
-		setInterval(updateView, {{ upd|int *1000 }});
-	</script>
 	<head>
 		<meta charset="utf-8" />
 		<title>Eltena</title>
+		<script type="text/javascript" src="static/snmp.js"></script>
+		<script type="text/javascript" >
+			updateView();
+			setInterval(updateView, {{ upd|int *1000 }});
+		</script>
 	</head>
 	<body>
 		<table id="viewer">
