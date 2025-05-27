@@ -36,3 +36,12 @@ def index(upd): return render_template("index.html", upd=upd)
 
 
 
+
+if __name__ == "__main__": app.run(host="192.168.162.111", port="16200")
+
+
+
+
+
+
+
