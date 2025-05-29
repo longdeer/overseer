@@ -1,14 +1,16 @@
 {% for device in data %}
-	<div class="snmp-view">
+	{% if device[1][6]|int != 0 %} <div class="snmp-view" style="background-color: rgb(255,0,0);">
+	{% else %} <div class="snmp-view">
+	{% endif %}
 		<h1>{{ device[0] }}</h1>
 		<table>
 			<tr>
 				<td title="input VAC">input</td>
-				<td title="batteries VDC">battery</td>
+				<td title="batteries VDC">batteries</td>
 				<td title="output load in percentage of remaining capacity">load</td>
 				<td title="batteries remaining capacity percentage">capacity</td>
-				<td title="batteries temperature">temperature</td>
-				<td title="input voltage frequency">frequency</td>
+				<td title="batteries temperature">t</td>
+				<td title="input voltage frequency">f</td>
 				<td title="batteries time remaining in seconds (0 if on input voltage)">time</td>
 			</tr>
 			<tr>
