@@ -1,6 +1,7 @@
 __pycache__
 *.sublime-project
 *.sublime-workspace
+*.service
 bin
 lib
 lib64
