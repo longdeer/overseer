@@ -28,7 +28,7 @@ async def get_snmp_eltena(): return render_template(
 
 
 @app.route("/eltena<upd>")
-def index(upd): return render_template("index.html", upd=upd)
+def eltena(upd): return render_template("eltena.html", upd=upd)
 
 
 
