@@ -33,6 +33,8 @@ def eltena(upd): return render_template("eltena.html", upd=upd)
 
 
 
+@app.route("/office")
+def office(): return render_template("office.html")
 
 
 
