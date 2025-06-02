@@ -7,15 +7,103 @@
 		<script type="text/javascript" src="static/office.js"></script>
 	</head>
 	<body>
-		<div id="office-home">
-			<button class="office-tab" onclick="openTab(event, 'notes')">СЗ</button>
+		<div id="office-main">
+			<button class="office-tab" onclick="openTab(event, 'actsnprots')">Акты и протоколы</button>
+			<button class="office-tab" onclick="openTab(event, 'contracts')">Договоры</button>
 			<button class="office-tab" onclick="openTab(event, 'letters')">Письма</button>
+			<button class="office-tab" onclick="openTab(event, 'incomes')">Приходные ордеры</button>
+			<button class="office-tab" onclick="openTab(event, 'orders')">Распоряжения и приказы</button>
+			<button class="office-tab" onclick="openTab(event, 'notes')">СЗ</button>
 		</div>
-		<div id="notes" class="office-tab-content">
-			<h3>Служебные записки</h3>
+		<div id="actsnprots" class="office-tab-content">
+			<h3>Акты и протоколы</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Категория</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">Содержание</th>
+					<th class="office-tab-header">Составитель</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
+		</div>
+		<div id="contracts" class="office-tab-content">
+			<h3>Договоры</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">ЕОСЭД</th>
+					<th class="office-tab-header">Содержание</th>
+					<th class="office-tab-header">Контрагент</th>
+					<th class="office-tab-header">Подписант наш</th>
+					<th class="office-tab-header">Подписант не наш</th>
+					<th class="office-tab-header">Действует с</th>
+					<th class="office-tab-header">Действует до</th>
+					<th class="office-tab-header">Цена</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
 		</div>
 		<div id="letters" class="office-tab-content">
 			<h3>Письма</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">ЕОСЭД</th>
+					<th class="office-tab-header">Тема</th>
+					<th class="office-tab-header">Адресат</th>
+					<th class="office-tab-header">Адрес</th>
+					<th class="office-tab-header">Подписант</th>
+					<th class="office-tab-header">Инициатор</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
+		</div>
+		<div id="incomes" class="office-tab-content">
+			<h3>Приходные ордеры</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">Содержание</th>
+					<th class="office-tab-header">Контрагент</th>
+					<th class="office-tab-header">Склад</th>
+					<th class="office-tab-header">Сумма</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
+		</div>
+		<div id="orders" class="office-tab-content">
+			<h3>Распоряжения и приказы</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">ЕОСЭД</th>
+					<th class="office-tab-header">Содержание</th>
+					<th class="office-tab-header">Ознакомление</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
+		</div>
+		<div id="notes" class="office-tab-content">
+			<h3>Служебные записки</h3>
+			<table>
+				<tr>
+					<th class="office-tab-header">Дата</th>
+					<th class="office-tab-header">Регистрация</th>
+					<th class="office-tab-header">Номер</th>
+					<th class="office-tab-header">ЕОСЭД</th>
+					<th class="office-tab-header">Тема</th>
+					<th class="office-tab-header">Адресат</th>
+					<th class="office-tab-header">Подписант</th>
+					<th class="office-tab-header">Инициатор</th>
+					<th class="office-tab-header">Примечание</th>
+				</tr>
+			</table>
 		</div>
 	</body>
 </html>
