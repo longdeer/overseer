@@ -46,7 +46,16 @@ async def get_eltena(addr :str):
 
 
 	engine.close_dispatcher()
-	return	data
+	return	{
+
+		"input_ACV":		data[0],
+		"batteries_DCV":	data[1],
+		"load_perc":		data[2],
+		"capacity_perc":	data[3],
+		"temperature":		data[4],
+		"frequency":		data[5],
+		"time_remain":		data[6],
+	}
 
 
 

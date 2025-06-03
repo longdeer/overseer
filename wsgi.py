@@ -1,6 +1,7 @@
-from flask	import Flask
-from flask	import render_template
-from eltena	import get_eltena
+import	json
+from	flask	import Flask
+from	flask	import render_template
+from	eltena	import get_eltena
 
 
 
@@ -15,20 +16,18 @@ app = Flask(__name__)
 
 
 @app.route("/get_snmp_eltena")
-async def get_snmp_eltena(): return render_template(
+async def get_snmp_eltena():
 
-	"viewer.html",
-	data=[
-		[ "CC", await get_eltena("192.168.160.253") ],
-		[ "Rx", await get_eltena("192.168.160.254") ]
-	]
-)
+	CC = await get_eltena("192.168.160.253")
+	Rx = await get_eltena("192.168.160.254")
+
+	return json.dumps({ "CC": CC, "Rx": Rx })
 
 
 
 
 @app.route("/eltena<upd>")
-def eltena(upd): return render_template("eltena.html", upd=upd)
+def eltena(upd :str): return render_template("eltena.html", upd=upd)
 
 
 
