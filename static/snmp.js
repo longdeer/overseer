@@ -1,6 +1,6 @@
 var updateView = function() {
 
-	view = fetch("/get_snmp_eltena", { "method": "GET" })
+	Promise.try(() => fetch("/get_snmp_eltena", { "method": "GET" }))
 		.then(response => {
 
 			if(!response.ok) throw new Error(`Get SNMP status: ${response.status}`);
@@ -46,5 +46,28 @@ var updateView = function() {
 			document.getElementById("rx-temperature").innerHTML = `${rxTemperature} C`;
 			document.getElementById("rx-frequency").innerHTML = `${rxFrequency} Hz`;
 			document.getElementById("rx-timeRemain").innerHTML = rxTimeRemain;
+		})
+		.catch(E => {
+
+			console.log(E);
+
+			document.getElementsByClassName("snmp-view cc")[0].style.backgroundColor = "yellow";
+			document.getElementsByClassName("snmp-view rx")[0].style.backgroundColor = "yellow";
+
+			document.getElementById("cc-inputACV").innerHTML = "-";
+			document.getElementById("cc-batteriesDCV").innerHTML = "-";
+			document.getElementById("cc-loadPerc").innerHTML = "-";
+			document.getElementById("cc-capacityPerc").innerHTML = "-";
+			document.getElementById("cc-temperature").innerHTML = "-";
+			document.getElementById("cc-frequency").innerHTML = "-";
+			document.getElementById("cc-timeRemain").innerHTML = "-";
+
+			document.getElementById("rx-inputACV").innerHTML = "-";
+			document.getElementById("rx-batteriesDCV").innerHTML = "-";
+			document.getElementById("rx-loadPerc").innerHTML = "-";
+			document.getElementById("rx-capacityPerc").innerHTML = "-";
+			document.getElementById("rx-temperature").innerHTML = "-";
+			document.getElementById("rx-frequency").innerHTML = "-";
+			document.getElementById("rx-timeRemain").innerHTML = "-";
 		})
 }
