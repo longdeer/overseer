@@ -12,4 +12,32 @@ function openTab(event, tabName) {
 	);
 	document.getElementById(tabName).style.display = "block";
 	event.currentTarget.className += " active";
+
+
+	fetch(`/office-tab-${tabName}`, { "method": "GET" })
+		.then(response => {
+
+			if(!response.ok) throw new Error(`Get office tab status: ${response.status}`);
+			return response.json();
+
+		}).then(view => {
+
+			var newRow;
+			var tab = view[tabName];
+			var table = document.getElementById(tabName).getElementsByTagName("table")[0];
+			var current = table.getElementsByTagName("tbody")[0];
+
+			if(current) current.remove();
+
+			table =	table.appendChild(document.createElement("tbody"));
+
+
+			for(var rowID in tab) {
+
+				newRow = table.insertRow();
+				row = tab[rowID];
+
+				for(var col in row) newRow.insertCell().appendChild(document.createTextNode(row[col] || ""));
+			}
+		})
 }
