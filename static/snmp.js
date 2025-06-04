@@ -1,6 +1,6 @@
 var updateView = function() {
 
-	Promise.try(() => fetch("/get_snmp_eltena", { "method": "GET" }))
+	fetch("/get_snmp_eltena", { "method": "GET" })
 		.then(response => {
 
 			if(!response.ok) throw new Error(`Get SNMP status: ${response.status}`);
