@@ -5,12 +5,58 @@ div.snmp-view {
 	display: inline-block;
 	border: 2px solid black;
 }
+/* cc info row style */
+#cc-inputACV {
+	width: 60px;
+}
+#cc-batteriesDCV {
+	width: 60px;
+}
+#cc-loadPerc {
+	width: 50px;
+}
+#cc-capacityPerc {
+	width: 50px;
+}
+#cc-temperature {
+	width: 50px;
+}
+#cc-frequency {
+	width: 50px;
+}
+#cc-timeRemain {
+	width: 60px;
+}
+/* rx info row style */
+#rx-inputACV {
+	width: 60px;
+}
+#rx-batteriesDCV {
+	width: 60px;
+}
+#rx-loadPerc {
+	width: 50px;
+}
+#rx-capacityPerc {
+	width: 50px;
+}
+#rx-temperature {
+	width: 50px;
+}
+#rx-frequency {
+	width: 50px;
+}
+#rx-timeRemain {
+	width: 60px;
+}
+/* common table style */
 td {
 	text-align: center;
 	border: 2px solid black;
 	padding: 5px;
 	cursor: help;
 }
+/* office styles */
 .office-tab-content {
 	display: none;
 }

@@ -7,11 +7,58 @@
 		<script type="text/javascript" src="static/snmp.js"></script>
 	</head>
 	<body>
+		<div id="viewer">
+			<div class="snmp-view cc">
+				<h1>CC</h1>
+				<table>
+					<tr>
+						<td title="input VAC">input</td>
+						<td title="batteries VDC">batteries</td>
+						<td title="output load in percentage of remaining capacity">load</td>
+						<td title="batteries remaining capacity percentage">capacity</td>
+						<td title="batteries temperature">t</td>
+						<td title="input voltage frequency">f</td>
+						<td title="batteries time remaining in seconds (- if on input voltage)">time</td>
+					</tr>
+					<tr>
+						<td id="cc-inputACV" title="input VAC"></td>
+						<td id="cc-batteriesDCV" title="batteries VDC"></td>
+						<td id="cc-loadPerc" title="output load in percentage of remaining capacity"></td>
+						<td id="cc-capacityPerc" title="batteries remaining capacity percentage"></td>
+						<td id="cc-temperature" title="batteries temperature"></td>
+						<td id="cc-frequency" title="input voltage frequency"></td>
+						<td id="cc-timeRemain" title="batteries time remaining in seconds (- if on input voltage)"></td>
+					</tr>
+				</table>
+			</div>
+			<br>
+			<div class="snmp-view rx">
+				<h1>RX</h1>
+				<table>
+					<tr>
+						<td title="input VAC">input</td>
+						<td title="batteries VDC">batteries</td>
+						<td title="output load in percentage of remaining capacity">load</td>
+						<td title="batteries remaining capacity percentage">capacity</td>
+						<td title="batteries temperature">t</td>
+						<td title="input voltage frequency">f</td>
+						<td title="batteries time remaining in seconds (0 if on input voltage)">time</td>
+					</tr>
+					<tr>
+						<td id="rx-inputACV" title="input VAC"></td>
+						<td id="rx-batteriesDCV" title="batteries VDC"></td>
+						<td id="rx-loadPerc" title="output load in percentage of remaining capacity"></td>
+						<td id="rx-capacityPerc" title="batteries remaining capacity percentage"></td>
+						<td id="rx-temperature" title="batteries temperature"></td>
+						<td id="rx-frequency" title="input voltage frequency"></td>
+						<td id="rx-timeRemain" title="batteries time remaining in seconds (0 if on input voltage)"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<script type="text/javascript" >
 			updateView();
 			setInterval(updateView, {{ upd|int *1000 }});
 		</script>
-		<div id="viewer">
-		</div>
 	</body>
 </html>
