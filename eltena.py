@@ -1,10 +1,11 @@
-from pysnmp.hlapi.v3arch.asyncio import SnmpEngine
-from pysnmp.hlapi.v3arch.asyncio import get_cmd
-from pysnmp.hlapi.v3arch.asyncio import CommunityData
-from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
-from pysnmp.hlapi.v3arch.asyncio import ContextData
-from pysnmp.hlapi.v3arch.asyncio import ObjectType
-from pysnmp.hlapi.v3arch.asyncio import ObjectIdentity
+from typing							import Dict
+from pysnmp.hlapi.v3arch.asyncio	import SnmpEngine
+from pysnmp.hlapi.v3arch.asyncio	import get_cmd
+from pysnmp.hlapi.v3arch.asyncio	import CommunityData
+from pysnmp.hlapi.v3arch.asyncio	import UdpTransportTarget
+from pysnmp.hlapi.v3arch.asyncio	import ContextData
+from pysnmp.hlapi.v3arch.asyncio	import ObjectType
+from pysnmp.hlapi.v3arch.asyncio	import ObjectIdentity
 
 
 
@@ -13,7 +14,7 @@ from pysnmp.hlapi.v3arch.asyncio import ObjectIdentity
 
 
 
-async def get_eltena(addr :str):
+async def get_eltena(addr :str) -> Dict[str,str] :
 
 	engine = SnmpEngine()
 	data = [ "None" ] *6

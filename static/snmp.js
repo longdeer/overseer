@@ -46,8 +46,8 @@ var updateView = function() {
 			document.getElementById("rx-temperature").innerHTML = `${rxTemperature} C`;
 			document.getElementById("rx-frequency").innerHTML = `${rxFrequency} Hz`;
 			document.getElementById("rx-timeRemain").innerHTML = rxTimeRemain;
-		})
-		.catch(E => {
+
+		}).catch(E => {
 
 			console.log(E);
 
