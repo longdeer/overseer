@@ -60,3 +60,8 @@ td {
 .office-tab-content {
 	display: none;
 }
+.office-tab-header-filter {
+	border: none;
+	background-color: white;
+	font-size: 25px;
+}

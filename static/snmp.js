@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 var updateView = function() {
 
 	fetch("/get_snmp_eltena", { "method": "GET" })
@@ -71,3 +79,10 @@ var updateView = function() {
 			document.getElementById("rx-timeRemain").innerHTML = "-";
 		})
 }
+
+
+
+
+
+
+

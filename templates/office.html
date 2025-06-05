@@ -8,24 +8,24 @@
 	</head>
 	<body>
 		<div id="office-main">
-			<button class="office-tab" onclick="openTab(event, 'actsnprots')">Акты и протоколы</button>
-			<button class="office-tab" onclick="openTab(event, 'contracts')">Договоры</button>
-			<button class="office-tab" onclick="openTab(event, 'letters')">Письма</button>
-			<button class="office-tab" onclick="openTab(event, 'incomes')">Приходные ордеры</button>
-			<button class="office-tab" onclick="openTab(event, 'orders')">Распоряжения и приказы</button>
-			<button class="office-tab" onclick="openTab(event, 'notes')">СЗ</button>
+			<button class="office-tab" onclick="openTab(event, 'actsnprots', 3)">Акты и протоколы</button>
+			<button class="office-tab" onclick="openTab(event, 'contracts', 3)">Договоры</button>
+			<button class="office-tab" onclick="openTab(event, 'letters', 3)">Письма</button>
+			<button class="office-tab" onclick="openTab(event, 'incomes', 3)">Приходные ордеры</button>
+			<button class="office-tab" onclick="openTab(event, 'orders', 3)">Распоряжения и приказы</button>
+			<button class="office-tab" onclick="openTab(event, 'notes', 3)">СЗ</button>
 		</div>
 		<div id="actsnprots" class="office-tab-content">
 			<h3>Акты и протоколы</h3>
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Категория</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">Содержание</th>
-						<th class="office-tab-header">Составитель</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'actsnprots')">&#11123</button></th>
+						<th class="office-tab-header">Категория<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'actsnprots')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'actsnprots')">&#11123</button></th>
+						<th class="office-tab-header">Содержание<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'actsnprots')">&#11123</button></th>
+						<th class="office-tab-header">Составитель<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'actsnprots')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'actsnprots')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
@@ -35,17 +35,17 @@
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">ЕОСЭД</th>
-						<th class="office-tab-header">Содержание</th>
-						<th class="office-tab-header">Контрагент</th>
-						<th class="office-tab-header">Подписант наш</th>
-						<th class="office-tab-header">Подписант не наш</th>
-						<th class="office-tab-header">Действует с</th>
-						<th class="office-tab-header">Действует до</th>
-						<th class="office-tab-header">Цена</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">ЕОСЭД<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Содержание<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Контрагент<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Подписант наш<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Подписант не наш<button class="office-tab-header-filter" onclick="sortToggle(event, 64, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Действует с<button class="office-tab-header-filter" onclick="sortToggle(event, 128, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Действует до<button class="office-tab-header-filter" onclick="sortToggle(event, 256, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Цена<button class="office-tab-header-filter" onclick="sortToggle(event, 512, 'contracts')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 1024, 'contracts')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
@@ -55,15 +55,15 @@
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">ЕОСЭД</th>
-						<th class="office-tab-header">Тема</th>
-						<th class="office-tab-header">Адресат</th>
-						<th class="office-tab-header">Адрес</th>
-						<th class="office-tab-header">Подписант</th>
-						<th class="office-tab-header">Инициатор</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">ЕОСЭД<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Тема<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Адресат<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Адрес<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Подписант<button class="office-tab-header-filter" onclick="sortToggle(event, 64, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Инициатор<button class="office-tab-header-filter" onclick="sortToggle(event, 128, 'letters')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 256, 'letters')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
@@ -73,13 +73,13 @@
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">Содержание</th>
-						<th class="office-tab-header">Контрагент</th>
-						<th class="office-tab-header">Склад</th>
-						<th class="office-tab-header">Сумма</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Содержание<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Контрагент<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Склад<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Сумма<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'incomes')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 64, 'incomes')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
@@ -89,12 +89,12 @@
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">ЕОСЭД</th>
-						<th class="office-tab-header">Содержание</th>
-						<th class="office-tab-header">Ознакомление</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'orders')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'orders')">&#11123</button></th>
+						<th class="office-tab-header">ЕОСЭД<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'orders')">&#11123</button></th>
+						<th class="office-tab-header">Содержание<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'orders')">&#11123</button></th>
+						<th class="office-tab-header">Ознакомление<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'orders')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'orders')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
@@ -104,15 +104,15 @@
 			<table>
 				<thead>
 					<tr>
-						<th class="office-tab-header">Дата</th>
-						<th class="office-tab-header">Регистрация</th>
-						<th class="office-tab-header">Номер</th>
-						<th class="office-tab-header">ЕОСЭД</th>
-						<th class="office-tab-header">Тема</th>
-						<th class="office-tab-header">Адресат</th>
-						<th class="office-tab-header">Подписант</th>
-						<th class="office-tab-header">Инициатор</th>
-						<th class="office-tab-header">Примечание</th>
+						<th class="office-tab-header">Дата<button class="office-tab-header-filter" onclick="sortToggle(event, 1, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Регистрация<button class="office-tab-header-filter" onclick="sortToggle(event, 2, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Номер<button class="office-tab-header-filter" onclick="sortToggle(event, 4, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">ЕОСЭД<button class="office-tab-header-filter" onclick="sortToggle(event, 8, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Тема<button class="office-tab-header-filter" onclick="sortToggle(event, 16, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Адресат<button class="office-tab-header-filter" onclick="sortToggle(event, 32, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Подписант<button class="office-tab-header-filter" onclick="sortToggle(event, 64, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Инициатор<button class="office-tab-header-filter" onclick="sortToggle(event, 128, 'notes')">&#11123</button></th>
+						<th class="office-tab-header">Примечание<button class="office-tab-header-filter" onclick="sortToggle(event, 256, 'notes')">&#11123</button></th>
 					</tr>
 				</thead>
 			</table>
