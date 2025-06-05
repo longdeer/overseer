@@ -34,23 +34,21 @@ function openTab(event /* Event */, tabName /* String */, order /* Number */) {
 
 		}).then(view => {
 
+			var row;
+			var col;
 			var newRow;
-			var tab = Object.values(view[tabName]);
+			var tab = view[tabName];
 			var table = document.getElementById(tabName).getElementsByTagName("table")[0];
 			var current = table.getElementsByTagName("tbody")[0];
 
 			if(current) current.remove();
 
 			table =	table.appendChild(document.createElement("tbody"));
-
-			for(var rowID in Object.getOwnPropertyNames(tab)) {
+			tab.forEach(row => {
 
 				newRow = table.insertRow();
-				row = tab[rowID];
-				console.log(`rowId = ${rowID}, row = ${row}`);
-
-				for(var col in row) newRow.insertCell().appendChild(document.createTextNode(row[col]));
-			}
+				for(col in row) newRow.insertCell().appendChild(document.createTextNode(row[col]));
+			})
 		})
 }
 
@@ -64,9 +62,6 @@ function openTab(event /* Event */, tabName /* String */, order /* Number */) {
 function sortToggle(event /* Event */, row /* Number */, tabName /* String */) {
 
 	var nextState = event.target.innerHTML.trim().charCodeAt(0) ^2;
-	// console.log(`nextState = ${nextState}`);
-	// console.log(`nextState &2 = ${nextState &2}`);
-	// console.log(`row = ${row}, order = ${(row <<1) + Boolean(nextState &2)}`);
 	event.target.innerHTML = `&#${nextState}`;
 	openTab(event, tabName, (row <<1) + Boolean(nextState &2));
 
