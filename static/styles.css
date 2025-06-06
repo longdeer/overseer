@@ -65,3 +65,6 @@ td {
 	background-color: white;
 	font-size: 25px;
 }
+input {
+	overflow-wrap: break-word;
+}

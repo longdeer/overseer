@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Eltena</title>
+		<title>overseer</title>
 		<link rel="stylesheet" href="static/styles.css">
 		<script type="text/javascript" src="static/office.js"></script>
 	</head>
@@ -16,7 +16,15 @@
 			<button class="office-tab" onclick="openTab(event, 'notes', 3)">СЗ</button>
 		</div>
 		<div id="actsnprots" class="office-tab-content">
-			<h3>Акты и протоколы</h3>
+			<h3>Акты и протоколы</h3><button class="office-tab-content-add">+</button>
+			<form action="" method="POST" class="office-tab-content-add-form">
+				<input type="text" name="col1" contenteditable>
+				<input type="text" name="col2">
+				<input type="text" name="col3">
+				<input type="text" name="col4">
+				<input type="text" name="col5">
+				<input type="text" name="col6">
+			</form>
 			<table>
 				<thead>
 					<tr>
@@ -117,5 +125,14 @@
 				</thead>
 			</table>
 		</div>
+		<!-- <script>
+			var tabInput = document.querySelector("input");
+			tabInput.addEventListener("input", () => {
+
+				console.log("+");
+				tabInput.style.height = "0px";
+				tabInput.style.height = tabInput.scrollWidth + "px";
+			})
+		</script> -->
 	</body>
 </html>
