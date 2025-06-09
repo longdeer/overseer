@@ -26,7 +26,7 @@ function openTab(event /* Event */, tabName /* String */, order /* Number */) {
 	params.append("order", order);
 
 
-	fetch(`/office-tab-${tabName}?${params}`, { "method": "GET" })
+	fetch(`/office-tab-${tabName}?${params}`, { method: "GET" })
 		.then(response => {
 
 			if(!response.ok) throw new Error(`Get office tab status: ${response.status}`);
@@ -83,6 +83,30 @@ function adaptInputs() {
 			node.style.width = node.scrollWidth + "px";
 		})
 	})
+}
+
+
+
+
+
+
+
+
+function submitTabInput(Tab) {
+
+	var tabName = Tab.id.split("-").slice(-1);
+	var query = {};
+	query[tabName] = {};
+
+	Array.prototype.forEach.call(Tab,item => { if(item.name !== "submit") query[tabName][item.name] = item.value })
+
+	fetch("/office-add",{ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(query) })
+		.then(response => {
+
+			if(!response.ok) throw new Error(`Get office tab add status: ${response.status}`);
+			return response.json();
+
+		}).then(response => console.log("ok"))
 }
 
 

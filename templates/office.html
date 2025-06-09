@@ -16,14 +16,15 @@
 			<button class="office-tab" onclick="openTab(event, 'notes', 3)">СЗ</button>
 		</div>
 		<div id="actsnprots" class="office-tab-content">
-			<h3>Акты и протоколы</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Акты и протоколы</h3>
+			<form id="office-tab-content-add-form-actsnprots" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="category">Категория</label><input name="category" type="text" name="col2"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col3"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col4"><br>
 				<label for="author">Составитель</label><input name="author" type="text" name="col5"><br>
-				<label for="comment">Примечание</label><input name="comment" type="text" name="col6">
+				<label for="comment">Примечание</label><input name="comment" type="text" name="col6"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
@@ -39,8 +40,8 @@
 			</table>
 		</div>
 		<div id="contracts" class="office-tab-content">
-			<h3>Договоры</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Договоры</h3>
+			<form id="office-tab-content-add-form-contracts" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
@@ -51,7 +52,8 @@
 				<label for="fmdate">Действует с</label><input name="fmdate" type="text" name="col8"><br>
 				<label for="todate">Действует до</label><input name="todate" type="text" name="col9"><br>
 				<label for="price">Цена</label><input name="price" type="text" name="col10"><br>
-				<label for="comment">Примечание</label><input name="comment" type="text" name="col11">
+				<label for="comment">Примечание</label><input name="comment" type="text" name="col11"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
@@ -72,8 +74,8 @@
 			</table>
 		</div>
 		<div id="letters" class="office-tab-content">
-			<h3>Письма</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Письма</h3>
+			<form id="office-tab-content-add-form-letters" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
@@ -82,7 +84,8 @@
 				<label for="address">Адрес</label><input name="address" type="text" name="col6"><br>
 				<label for="signer">Подписант</label><input name="signer" type="text" name="col7"><br>
 				<label for="author">Инициатор</label><input name="author" type="text" name="col8"><br>
-				<label for="comment">Примечание</label><input name="comment" type="text" name="col9">
+				<label for="comment">Примечание</label><input name="comment" type="text" name="col9"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
@@ -101,8 +104,8 @@
 			</table>
 		</div>
 		<div id="incomes" class="office-tab-content">
-			<h3>Приходные ордеры</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Приходные ордеры</h3>
+			<form id="office-tab-content-add-form-incomes" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col3"><br>
@@ -110,6 +113,7 @@
 				<label for="storage">Склад</label><input name="storage" type="text" name="col5"><br>
 				<label for="price">Сумма</label><input name="price" type="text" name="col6"><br>
 				<label for="comment">Примечание</label><input name="comment" type="text" name="col7"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
@@ -126,14 +130,15 @@
 			</table>
 		</div>
 		<div id="orders" class="office-tab-content">
-			<h3>Распоряжения и приказы</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Распоряжения и приказы</h3>
+			<form id="office-tab-content-add-form-orders" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col4"><br>
 				<label for="acq">Ознакомление</label><input name="acq" type="text" name="col5"><br>
 				<label for="comment">Примечание</label><input name="comment" type="text" name="col7"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
@@ -149,8 +154,8 @@
 			</table>
 		</div>
 		<div id="notes" class="office-tab-content">
-			<h3>Служебные записки</h3><button class="office-tab-content-add">Добавить</button>
-			<form action="" method="POST" class="office-tab-content-add-form">
+			<h3>Служебные записки</h3>
+			<form id="office-tab-content-add-form-notes" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
 				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
 				<label for="reg">Регистрация</label><input name="reg" type="text" name="col2"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col3"><br>
@@ -159,7 +164,8 @@
 				<label for="receiver">Адресат</label><input name="receiver" type="text" name="col6"><br>
 				<label for="signer">Подписант</label><input name="signer" type="text" name="col7"><br>
 				<label for="author">Инициатор</label><input name="author" type="text" name="col8"><br>
-				<label for="comment">Примечание</label><input name="comment" type="text" name="col9">
+				<label for="comment">Примечание</label><input name="comment" type="text" name="col9"><br>
+				<input name="submit" type="submit" value="Добавить">
 			</form>
 			<table>
 				<thead>
