@@ -21,6 +21,56 @@ TAB_CACHE	= dict()
 
 
 
+async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | bool :
+
+	if	isinstance(query, dict) and len(query) == 1:
+
+		try:
+
+			connection = MYSQL.connect(
+
+				user="vla",
+				password="vla::SQL",
+				host="192.168.162.65",
+				database="office",
+			)
+			db = connection.cursor()
+
+			match (name := list(query)[0]):
+
+				case "actsnprots":
+
+					keys = str()
+					values = str()
+
+					for k,v in query[name].items():
+						if	v:
+
+							keys += f"{k},"
+							values += f"'{v}',"
+
+					db.execute("INSERT INTO actsnprots (%s) VALUES (%s)"%(keys.strip(","), values.strip(",")))
+
+
+			connection.commit()
+			db.close()
+			return True
+
+
+		except	Exception as E:
+
+			print(f"{E.__class__.__name__}: {E}")
+			return False
+
+		else:	connection.close()
+
+
+
+
+
+
+
+
 async def get_office_tab(name :str, order :int) -> Dict[str,str] :
 
 	if	(cached := TAB_CACHE.get(name)):
