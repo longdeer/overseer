@@ -62,11 +62,22 @@ td.snmp-view-content {
 .office-tab-content {
 	display: none;
 }
+/*.office-tab-content label {*/
+label {
+	display: inline-block;
+	width: 105px;
+}
 .office-tab-header-filter {
 	border: none;
 	background-color: white;
 	font-size: 25px;
 }
+/*.office-tab-content-add-form {
+	float: left;
+}*/
 input {
 	overflow-wrap: break-word;
 }
+/*button.office-tab-content-add {
+	display: inline;
+}*/

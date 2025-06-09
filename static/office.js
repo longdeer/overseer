@@ -73,3 +73,21 @@ function sortToggle(event /* Event */, row /* Number */, tabName /* String */) {
 
 
 
+
+function adaptInputs() {
+
+	document.querySelectorAll("input").forEach(node => {
+		node.addEventListener("input", () => {
+
+			node.style.width = "146px";
+			node.style.width = node.scrollWidth + "px";
+		})
+	})
+}
+
+
+
+
+
+
+
