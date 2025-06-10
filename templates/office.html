@@ -8,17 +8,17 @@
 	</head>
 	<body>
 		<div id="office-main">
-			<button class="office-tab" onclick="openTab(event, 'actsnprots', 3)">Акты и протоколы</button>
-			<button class="office-tab" onclick="openTab(event, 'contracts', 3)">Договоры</button>
-			<button class="office-tab" onclick="openTab(event, 'letters', 3)">Письма</button>
-			<button class="office-tab" onclick="openTab(event, 'incomes', 3)">Приходные ордеры</button>
-			<button class="office-tab" onclick="openTab(event, 'orders', 3)">Распоряжения и приказы</button>
-			<button class="office-tab" onclick="openTab(event, 'notes', 3)">СЗ</button>
+			<button class="office-tab" onclick="openTab(event, 'actsnprots', 3, true)">Акты и протоколы</button>
+			<button class="office-tab" onclick="openTab(event, 'contracts', 3, true)">Договоры</button>
+			<button class="office-tab" onclick="openTab(event, 'letters', 3, true)">Письма</button>
+			<button class="office-tab" onclick="openTab(event, 'incomes', 3, true)">Приходные ордеры</button>
+			<button class="office-tab" onclick="openTab(event, 'orders', 3, true)">Распоряжения и приказы</button>
+			<button class="office-tab" onclick="openTab(event, 'notes', 3, true)">СЗ</button>
 		</div>
 		<div id="actsnprots" class="office-tab-content">
 			<h3>Акты и протоколы</h3>
 			<form id="office-tab-content-add-form-actsnprots" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="category">Категория</label><input name="category" type="text" name="col2"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col3"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col4"><br>
@@ -42,7 +42,7 @@
 		<div id="contracts" class="office-tab-content">
 			<h3>Договоры</h3>
 			<form id="office-tab-content-add-form-contracts" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col4"><br>
@@ -76,7 +76,7 @@
 		<div id="letters" class="office-tab-content">
 			<h3>Письма</h3>
 			<form id="office-tab-content-add-form-letters" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
 				<label for="theme">Тема</label><input name="theme" type="text" name="col4"><br>
@@ -106,7 +106,7 @@
 		<div id="incomes" class="office-tab-content">
 			<h3>Приходные ордеры</h3>
 			<form id="office-tab-content-add-form-incomes" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col3"><br>
 				<label for="agent">Контрагент</label><input name="agent" type="text" name="col4"><br>
@@ -132,7 +132,7 @@
 		<div id="orders" class="office-tab-content">
 			<h3>Распоряжения и приказы</h3>
 			<form id="office-tab-content-add-form-orders" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col2"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col3"><br>
 				<label for="content">Содержание</label><input name="content" type="text" name="col4"><br>
@@ -156,7 +156,7 @@
 		<div id="notes" class="office-tab-content">
 			<h3>Служебные записки</h3>
 			<form id="office-tab-content-add-form-notes" action="javascript:;" onsubmit="submitTabInput(this)" method="POST" class="office-tab-content-add-form">
-				<label for="date">Дата</label><input name="date" type="text" name="col1"><br>
+				<label for="date">Дата</label><input name="date" type="text" name="col1" autocomplete="off"><br>
 				<label for="reg">Регистрация</label><input name="reg" type="text" name="col2"><br>
 				<label for="number">Номер</label><input name="number" type="text" name="col3"><br>
 				<label for="eosed">ЕОСЭД</label><input name="eosed" type="text" name="col4"><br>

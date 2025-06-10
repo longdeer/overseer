@@ -1,8 +1,11 @@
-from	typing			import Dict
-from	math			import log
-from	operator		import itemgetter
-from	datetime		import date
+from	typing							import Dict
+from	math							import log
+from	operator						import itemgetter
+from	datetime						import date
 import	mysql.connector	as MYSQL
+from	pygwarts.magical.spells			import patronus
+from	pygwarts.magical.time_turner	import TimeTurner
+import	mysql.connector					as MYSQL
 
 
 
@@ -21,7 +24,7 @@ TAB_CACHE	= dict()
 
 
 
-async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | bool :
+async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | str | None :
 
 	if	isinstance(query, dict) and len(query) == 1:
 
@@ -35,32 +38,34 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 				database="office",
 			)
 			db = connection.cursor()
-
-			match (name := list(query)[0]):
-
-				case "actsnprots":
-
-					keys = str()
-					values = str()
-
-					for k,v in query[name].items():
-						if	v:
-
-							keys += f"{k},"
-							values += f"'{v}',"
-
-					db.execute("INSERT INTO actsnprots (%s) VALUES (%s)"%(keys.strip(","), values.strip(",")))
+			values = str()
+			keys = str()
 
 
+			for data in query.values():
+				for k,v in data.items():
+
+					if	v:
+						if	k == "date":
+
+							try:	point = TimeTurner(v)
+							except	ValueError : return { k:v }
+							else:	values += f"'{point.Ymd_dashed}',"
+						else:		values += f"'{v}',"
+
+						keys += f"{k},"
+
+
+			db.execute("INSERT INTO actsnprots (%s) VALUES (%s)"%(keys.strip(","), values.strip(",")))
 			connection.commit()
 			db.close()
-			return True
 
 
 		except	Exception as E:
 
-			print(f"{E.__class__.__name__}: {E}")
-			return False
+			message = patronus(E)
+			print(message)
+			return message
 
 		else:	connection.close()
 
@@ -71,9 +76,9 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 
 
 
-async def get_office_tab(name :str, order :int) -> Dict[str,str] :
+async def get_office_tab(name :str, order :int, refresh :bool) -> Dict[str,str] :
 
-	if	(cached := TAB_CACHE.get(name)):
+	if	not refresh and (cached := TAB_CACHE.get(name)):
 		if	order == ORDER_CACHE.get(name):
 
 			print(f"cache and order hit for {name}")

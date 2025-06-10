@@ -1,4 +1,6 @@
 import	json
+from	typing	import Dict
+from	typing	import Tuple
 from	flask	import Flask
 from	flask	import request
 from	flask	import render_template
@@ -24,19 +26,23 @@ app = Flask(__name__)
 
 # JSON routes
 @app.route("/office-add", methods=[ "POST" ])
-async def office_add():
+async def office_add() -> Tuple[str,int,Dict[str,str]] :
 
 	if	request.method == "POST":
-		if await add_office_content(request.get_json()):
+		match (response := await add_office_content(request.get_json())):
 
-			return	json.dumps({ "success": True }), 200, { "ContentType": "application/json" }
-		return		json.dumps({ "success": False }), 422, { "ContentType": "application/json" }
-	return			json.dumps({ "success": False }), 415, { "ContentType": "application/json" }
+			case None:		return json.dumps({ "success": True }), 200, { "ContentType": "application/json" }
+			case str():		return json.dumps({ "success": False, "exception": response }), 500, { "ContentType": "application/json" }
+			case dict():	return json.dumps({ "success": False, **response }), 400, { "ContentType": "application/json" }
+
+	return	json.dumps({ "success": False }), 405, { "ContentType": "application/json" }
 
 
 @app.route("/office-tab-<name>")
 async def office_tab(name :str) -> str :
-	return json.dumps({ name: await get_office_tab(name, request.args.get("order")) })
+
+	db_response = await get_office_tab(name, request.args.get("order"), request.args.get("fromTab") == "true")
+	return json.dumps({ "success": True, name: db_response }), 200, { "ContentType": "application/json" }
 
 
 @app.route("/get_snmp_eltena")
