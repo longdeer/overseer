@@ -1,11 +1,11 @@
-from	typing							import Dict
-from	math							import log
-from	operator						import itemgetter
-from	datetime						import date
-import	mysql.connector	as MYSQL
-from	pygwarts.magical.spells			import patronus
-from	pygwarts.magical.time_turner	import TimeTurner
-import	mysql.connector					as MYSQL
+from	typing							import	Dict
+from	typing							import	Tuple
+from	operator						import	itemgetter
+from	datetime						import	date
+from	math							import	log
+from	pygwarts.magical.spells			import	patronus
+from	pygwarts.magical.time_turner	import	TimeTurner
+import	mysql.connector					as		MYSQL
 
 
 
@@ -46,12 +46,13 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 				for k,v in data.items():
 
 					if	v:
-						if	k == "date":
+						match k:
+							case "date" | "fmdate" | "todate" | "reg":
 
-							try:	point = TimeTurner(v)
-							except	ValueError : return { k:v }
-							else:	values += f"'{point.Ymd_dashed}',"
-						else:		values += f"'{v}',"
+								try:	point = TimeTurner(v)
+								except	ValueError : return { k:v }
+								else:	values += f"'{point.Ymd_dashed}',"
+							case _:		values += f"'{v}',"
 
 						keys += f"{k},"
 
@@ -68,6 +69,24 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 			return message
 
 		else:	connection.close()
+
+
+
+
+
+
+
+
+def rows_comparator(table :str, index :Tuple[date|int|str]) -> date | int | str :
+	def comparator(align_row :int) -> Tuple[date | int | str] :
+
+		data = align_row[index]
+
+		if	index == 1 or (table == "contracts" and str(index) in "89") or (table == "notes" and index == 2):
+			return data or date(1,1,1)
+
+		return data.lower() if data is not None else str()
+		
 
 
 
@@ -135,20 +154,37 @@ async def get_office_tab(name :str, order :int, refresh :bool) -> Dict[str,str] 
 
 				case "actsnprots":
 					for col in sorted(
-						[
-							[
-								C.decode() if isinstance(C,bytes) else
-								C.strftime("%d/%m/%Y") if isinstance(C,date) else
-								C if C else
-								str()
-								for C in R
-							]
-							for R in db
-						],
-						key=itemgetter(int(log(int(order) >>1,2)) +1),
-						reverse=(not int(order) &1)
+
+						[[ value for value in row ] for row in db ],
+						key=rows_comparator(name, int(log(int(order) >>1,2))),
+						reverse=True
+						# reverse=(not int(order) &1)
 					):
-						current.append([ col[1], col[2], col[3], col[4], col[5], col[6] ])
+						current.append(
+							[
+								col[1].strftime("%d/%m/%Y") if col[1] else str(),
+								col[2].decode() if col[2] else str(),
+								col[3] or str(),
+								col[4].decode() if col[4] else str(),
+								col[5].decode() if col[5] else str(),
+								col[6].decode() if col[6] else str()
+							]
+						)
+					# for col in sorted(
+					# 	[
+					# 		[
+					# 			C.decode() if isinstance(C,bytes) else
+					# 			C.strftime("%d/%m/%Y") if isinstance(C,date) else
+					# 			C if C else
+					# 			str()
+					# 			for C in R
+					# 		]
+					# 		for R in db
+					# 	],
+					# 	key=itemgetter(int(log(int(order) >>1,2)) +1),
+					# 	reverse=(not int(order) &1)
+					# ):
+					# 	current.append([ col[1], col[2], col[3], col[4], col[5], col[6] ])
 
 
 				case "contracts":
