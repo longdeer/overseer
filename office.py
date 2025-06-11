@@ -1,21 +1,11 @@
 from	typing							import	Dict
-from	typing							import	Tuple
+from	typing							import	List
 from	operator						import	itemgetter
 from	datetime						import	date
 from	math							import	log
 from	pygwarts.magical.spells			import	patronus
 from	pygwarts.magical.time_turner	import	TimeTurner
 import	mysql.connector					as		MYSQL
-
-
-
-
-
-
-
-
-ORDER_CACHE	= dict()
-TAB_CACHE	= dict()
 
 
 
@@ -57,7 +47,7 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 						keys += f"{k},"
 
 
-			db.execute("INSERT INTO actsnprots (%s) VALUES (%s)"%(keys.strip(","), values.strip(",")))
+			db.execute("INSERT INTO %s (%s) VALUES (%s)"%(list(query)[0], keys.strip(","), values.strip(",")))
 			connection.commit()
 			db.close()
 
@@ -77,190 +67,125 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 
 
 
-def rows_comparator(table :str, index :Tuple[date|int|str]) -> date | int | str :
-	def comparator(align_row :int) -> Tuple[date | int | str] :
+async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str] :
 
-		data = align_row[index]
+	try:
 
-		if	index == 1 or (table == "contracts" and str(index) in "89") or (table == "notes" and index == 2):
-			return data or date(1,1,1)
+		connection = MYSQL.connect(
 
-		return data.lower() if data is not None else str()
-		
-
-
-
-
-
+			user="vla",
+			password="vla::SQL",
+			host="192.168.162.65",
+			database="office",
+		)
+		db = connection.cursor()
+		db.execute("SELECT * FROM %s ORDER BY %s %s"%(name, order_by, "DESC" if descending else "ASC"))
 
 
+		match name:
 
-async def get_office_tab(name :str, order :int, refresh :bool) -> Dict[str,str] :
-
-	if	not refresh and (cached := TAB_CACHE.get(name)):
-		if	order == ORDER_CACHE.get(name):
-
-			print(f"cache and order hit for {name}")
-			return cached
-
-
-		else:
-
-
-			print(f"cache hit for {name}")
-			current = list()
+			case "actsnprots":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2].decode() if row[2] else str(),
+						row[3] or str(),
+						row[4].decode() if row[4] else str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str()
+					]	for row in db
+				]
 
 
-			match name:
-				case "actsnprots":
-
-					for col in sorted(cached, key=itemgetter(int(log(int(order) >>1,2))), reverse=(not int(order) &1)):
-						current.append([ col[0], col[1], col[2], col[3], col[4], col[5] ])
-
-
-
-				case "contracts":
-
-					for col in sorted(cached, key=itemgetter(int(log(int(order) >>1,2))), reverse=(not int(order) &1)):
-						current.append([ col[0], col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8], col[9], col[10] ])
-
-
-				case "letters":
-
-					for col in sorted(cached, key=itemgetter(int(log(int(order) >>1,2))), reverse=(not int(order) &1)):
-						current.append([ col[0], col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8] ])
+			case "contracts":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2] or str(),
+						row[3] or str(),
+						row[4].decode() if row[4] else str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str(),
+						row[7].decode() if row[7] else str(),
+						row[8].strftime("%d/%m/%Y") if row[8] else str(),
+						row[9].strftime("%d/%m/%Y") if row[9] else str(),
+						row[10].decode() if row[10] else str(),
+						row[11].decode() if row[11] else str()
+					]	for row in db
+				]
 
 
-				case "notes":
+			case "letters":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2] or str(),
+						row[3] or str(),
+						row[4].decode() if row[4] else str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str(),
+						row[7].decode() if row[7] else str(),
+						row[8].decode() if row[8] else str(),
+						row[9].decode() if row[9] else str()
+					]	for row in db
+				]
 
-					for col in sorted(cached, key=itemgetter(int(log(int(order) >>1,2))), reverse=(not int(order) &1)):
-						current.append([ col[0], col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8] ])
+
+			case "incomes":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2] or str(),
+						row[3].decode() if row[3] else str(),
+						row[4].decode() if row[4] else str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str(),
+						row[7].decode() if row[7] else str(),
+					]	for row in db
+				]
+
+
+			case "orders":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2] or str(),
+						row[3] or str(),
+						row[4].decode() if row[4] else str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str(),
+					]	for row in db
+				]
+
+
+			case "notes":
+				current = [
+					[
+						row[1].strftime("%d/%m/%Y") if row[1] else str(),
+						row[2].strftime("%d/%m/%Y") if row[2] else str(),
+						row[3] or str(),
+						row[4] or str(),
+						row[5].decode() if row[5] else str(),
+						row[6].decode() if row[6] else str(),
+						row[7].decode() if row[7] else str(),
+						row[8].decode() if row[8] else str(),
+						row[9].decode() if row[9] else str()
+					]	for row in db
+				]
+
+
+		db.close()
+
+
+	except	Exception as E:
+
+		print(patronus(E))
+		return list()
+
 	else:
-		try:
 
-			current = list()
-			connection = MYSQL.connect(
-
-				user="vla",
-				password="vla::SQL",
-				host="192.168.162.65",
-				database="office",
-			)
-			db = connection.cursor()
-			db.execute("SELECT * FROM %s"%name)
-
-
-			match name:
-
-				case "actsnprots":
-					for col in sorted(
-
-						[[ value for value in row ] for row in db ],
-						key=rows_comparator(name, int(log(int(order) >>1,2))),
-						reverse=True
-						# reverse=(not int(order) &1)
-					):
-						current.append(
-							[
-								col[1].strftime("%d/%m/%Y") if col[1] else str(),
-								col[2].decode() if col[2] else str(),
-								col[3] or str(),
-								col[4].decode() if col[4] else str(),
-								col[5].decode() if col[5] else str(),
-								col[6].decode() if col[6] else str()
-							]
-						)
-					# for col in sorted(
-					# 	[
-					# 		[
-					# 			C.decode() if isinstance(C,bytes) else
-					# 			C.strftime("%d/%m/%Y") if isinstance(C,date) else
-					# 			C if C else
-					# 			str()
-					# 			for C in R
-					# 		]
-					# 		for R in db
-					# 	],
-					# 	key=itemgetter(int(log(int(order) >>1,2)) +1),
-					# 	reverse=(not int(order) &1)
-					# ):
-					# 	current.append([ col[1], col[2], col[3], col[4], col[5], col[6] ])
-
-
-				case "contracts":
-					for col in sorted(
-						[
-							[
-								C.decode() if isinstance(C,bytes) else
-								C.strftime("%d/%m/%Y") if isinstance(C,date) else
-								C if C else
-								str()
-								for C in R
-							]
-							for R in db
-						],
-						key=itemgetter(int(log(int(order) >>1,2)) +1),
-						reverse=(not int(order) &1)
-					):
-						current.append([ col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8], col[9], col[10], col[11] ])
-
-
-				case "letters":
-					for col in sorted(
-						[
-							[
-								C.decode() if isinstance(C,bytes) else
-								C.strftime("%d/%m/%Y") if isinstance(C,date) else
-								C if C else
-								str()
-								for C in R
-							]
-							for R in db
-						],
-						key=itemgetter(int(log(int(order) >>1,2)) +1),
-						reverse=(not int(order) &1)
-					):
-						current.append([ col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8], col[9] ])
-
-
-				case "notes":
-					for col in sorted(
-						[
-							[
-								C.decode() if isinstance(C,bytes) else
-								C.strftime("%d/%m/%Y") if isinstance(C,date) else
-								C if C else
-								str()
-								for C in R
-							]
-							for R in db
-						],
-						key=itemgetter(int(log(int(order) >>1,2)) +1),
-						reverse=(not int(order) &1)
-					):
-						current.append([ col[1], col[2], col[3], col[4], col[5], col[6], col[7], col[8], col[9] ])
-
-
-				case _:	current = list()
-
-
-			db.close()
-
-
-		except	Exception as E:
-
-			print(f"{E.__class__.__name__}: {E}")
-			return list()
-
-		else:	connection.close()
-
-
-	if	current:
-
-		TAB_CACHE[name]		= current
-		ORDER_CACHE[name]	= order
-
-	return current
+		connection.close()
+		return current
 
 
 

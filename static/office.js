@@ -6,7 +6,7 @@
 
 
 
-function openTab(event /* Event */, tabName /* String */, order /* Number */, fromTab /* Boolean */) {
+function openTab(event /* Event */, tabName /* String */, orderBy /* Number */, descending /* Boolean */) {
 
 	Array.prototype.forEach.call(
 
@@ -21,7 +21,7 @@ function openTab(event /* Event */, tabName /* String */, order /* Number */, fr
 	document.getElementById(tabName).style.display = "block";
 	event.currentTarget.className += " active";
 
-	fetchTabData(tabName, order, fromTab);
+	fetchTabData(tabName, orderBy, descending);
 }
 
 
@@ -31,9 +31,9 @@ function openTab(event /* Event */, tabName /* String */, order /* Number */, fr
 
 
 
-function fetchTabData(tabName /* String */, order /* Number */, fromTab /* Boolean */) {
+function fetchTabData(tabName /* String */, orderBy /* Number */, descending /* Boolean */) {
 
-	fetch(`/office-tab-${tabName}?${new URLSearchParams({ order, fromTab })}`, { method: "GET" })
+	fetch(`/office-tab-${tabName}?${new URLSearchParams({ orderBy, descending })}`, { method: "GET" })
 		.then(response => {
 
 			if(!response.ok) throw new Error(`Get office tab status: ${response.status}`);
@@ -66,11 +66,12 @@ function fetchTabData(tabName /* String */, order /* Number */, fromTab /* Boole
 
 
 
-function sortToggle(event /* Event */, row /* Number */, tabName /* String */) {
+function sortToggle(event /* Event */, orderBy /* Number */, tabName /* String */) {
 
 	var nextState = event.target.innerHTML.trim().charCodeAt(0) ^2;
+	var nextDescending = Boolean(nextState &2);
 	event.target.innerHTML = `&#${nextState}`;
-	fetchTabData(tabName, (row <<1) + Boolean(nextState &2), false);
+	fetchTabData(tabName, orderBy, nextDescending);
 }
 
 
@@ -115,8 +116,15 @@ function submitTabInput(Tab) {
 
 				case 200:
 
-					Array.prototype.forEach.call(Tab,item => { if(item.name !== "submit") item.value = "" });
-					fetchTabData(tabName, 3, true);
+					Array.prototype.forEach.call(Tab, item => {
+						if(item.name !== "submit") {
+
+							item.value = "";
+							item.style.width = "146px";
+						}
+					});
+
+					fetchTabData(tabName, 2, true);
 					break;
 
 				case 400:

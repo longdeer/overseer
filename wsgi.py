@@ -41,7 +41,7 @@ async def office_add() -> Tuple[str,int,Dict[str,str]] :
 @app.route("/office-tab-<name>")
 async def office_tab(name :str) -> str :
 
-	db_response = await get_office_tab(name, request.args.get("order"), request.args.get("fromTab") == "true")
+	db_response = await get_office_tab(name, request.args.get("orderBy"), request.args.get("descending") == "true")
 	return json.dumps({ "success": True, name: db_response }), 200, { "ContentType": "application/json" }
 
 
