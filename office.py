@@ -87,6 +87,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "actsnprots":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2].decode() if row[2] else str(),
 						row[3] or str(),
@@ -100,6 +101,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "contracts":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2] or str(),
 						row[3] or str(),
@@ -118,6 +120,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "letters":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2] or str(),
 						row[3] or str(),
@@ -134,6 +137,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "incomes":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2] or str(),
 						row[3].decode() if row[3] else str(),
@@ -148,6 +152,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "orders":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2] or str(),
 						row[3] or str(),
@@ -161,6 +166,7 @@ async def get_office_tab(name :str, order_by :int, descending :bool) -> List[str
 			case "notes":
 				current = [
 					[
+						row[0],
 						row[1].strftime("%d/%m/%Y") if row[1] else str(),
 						row[2].strftime("%d/%m/%Y") if row[2] else str(),
 						row[3] or str(),

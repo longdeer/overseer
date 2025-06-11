@@ -44,6 +44,8 @@ function fetchTabData(tabName /* String */, orderBy /* Number */, descending /* 
 			var row;
 			var col;
 			var newRow;
+			var delButton;
+			var updButton;
 			var tab = view[tabName];
 			var table = document.getElementById(tabName).getElementsByTagName("table")[0];
 			var current = table.getElementsByTagName("tbody")[0];
@@ -54,7 +56,22 @@ function fetchTabData(tabName /* String */, orderBy /* Number */, descending /* 
 			tab.forEach(row => {
 
 				newRow = table.insertRow();
-				for(col in row) newRow.insertCell().appendChild(document.createTextNode(row[col]));
+
+				for(col = 1; col <row.length; ++col) newRow.insertCell().appendChild(document.createTextNode(row[col]));
+
+				delButton = newRow.insertCell().appendChild(document.createElement("button"));
+				delButton.className = "office-tab-content-del";
+				delButton.textContent = "X";
+				delButton.type = "button";
+				delButton.id = `${tabName}-${row[0]}`;
+				delButton.onclick = event => console.log(event.target.id);
+
+				updButton = newRow.insertCell().appendChild(document.createElement("button"));
+				updButton.className = "office-tab-content-upd";
+				updButton.textContent = "U";
+				updButton.type = "button";
+				updButton.id = `${tabName}-${row[0]}`;
+				updButton.onclick = event => console.log(event.target.id);
 			})
 		})
 }
