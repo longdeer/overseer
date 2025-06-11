@@ -105,9 +105,24 @@ function submitTabInput(Tab) {
 
 	var tabName = Tab.id.split("-").slice(-1);
 	var query = {};
+	var filled = false;
+
 	query[tabName] = {};
 
-	Array.prototype.forEach.call(Tab,item => { if(item.name !== "submit") query[tabName][item.name] = item.value });
+	Array.prototype.forEach.call(Tab, item => {
+
+		if(item.name !== "submit" && (data = item.value)) {
+
+			query[tabName][item.name] = data;
+			filled = true;
+		}
+	});
+
+	if(!filled) {
+
+		alert("Empty form not allowed");
+		return;
+	}
 
 	fetch("/office-add",{ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(query) })
 		.then(response => {
@@ -117,6 +132,7 @@ function submitTabInput(Tab) {
 				case 200:
 
 					Array.prototype.forEach.call(Tab, item => {
+
 						if(item.name !== "submit") {
 
 							item.value = "";
@@ -139,7 +155,7 @@ function submitTabInput(Tab) {
 
 				/*
 					Despite endpoint might return 405, no need for handling it,
-					cause it's only for other than POST method
+					cause it's only for other than POST methods
 				*/
 
 				case 500:
