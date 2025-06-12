@@ -64,7 +64,7 @@ function fetchTabData(tabName /* String */, orderBy /* Number */, descending /* 
 				delButton.textContent = "X";
 				delButton.type = "button";
 				delButton.id = `${tabName}-${row[0]}`;
-				delButton.onclick = event => console.log(event.target.id);
+				delButton.onclick = delRow;
 
 				updButton = newRow.insertCell().appendChild(document.createElement("button"));
 				updButton.className = "office-tab-content-upd";
@@ -109,6 +109,38 @@ function adaptInputs() {
 			node.style.width = node.scrollWidth + "px";
 		})
 	})
+}
+
+
+
+
+
+
+
+
+function delRow(event /* Event */) {
+
+	var tabName;
+	var rowId;
+
+	[ tabName,rowId ] = event.target.id.split("-");
+
+	if(confirm(`Delete row ${rowId} from ${tabName} table?`)) {
+
+		fetch("/office-del",{ method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tabName,rowId }) })
+			.then(response => {
+
+				switch(response.status) {
+
+					case 200: fetchTabData(tabName, 2, true); break;
+					/*
+						Despite endpoint might return 405, no need for handling it,
+						cause it's only for other than POST methods
+					*/
+					case 500: response.json().then(data => alert(data.exception)); break;
+				}
+			})
+	}
 }
 
 

@@ -7,6 +7,7 @@ from	flask	import render_template
 from	eltena	import get_eltena
 from	office	import get_office_tab
 from	office	import add_office_content
+from	office	import del_office_content
 
 
 
@@ -38,11 +39,29 @@ async def office_add() -> Tuple[str,int,Dict[str,str]] :
 	return	json.dumps({ "success": False }), 405, { "ContentType": "application/json" }
 
 
+
+
+@app.route("/office-del", methods=[ "DELETE" ])
+async def office_del() -> Tuple[str,int,Dict[str,str]] :
+
+	if	request.method == "DELETE":
+		match (response := await del_office_content(request.get_json())):
+
+			case None:	return json.dumps({ "success": True }), 200, { "ContentType": "application/json" }
+			case str():	return json.dumps({ "success": False, "exception": response }), 500, { "ContentType": "application/json" }
+
+	return	json.dumps({ "success": False }), 405, { "ContentType": "application/json" }
+
+
+
+
 @app.route("/office-tab-<name>")
 async def office_tab(name :str) -> str :
 
 	db_response = await get_office_tab(name, request.args.get("orderBy"), request.args.get("descending") == "true")
 	return json.dumps({ "success": True, name: db_response }), 200, { "ContentType": "application/json" }
+
+
 
 
 @app.route("/get_snmp_eltena")

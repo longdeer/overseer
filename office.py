@@ -14,6 +14,43 @@ import	mysql.connector					as		MYSQL
 
 
 
+async def del_office_content(query :Dict[str,Dict[str,str]]) -> str | None :
+
+	if	isinstance(query, dict) and len(query) == 2:
+
+		try:
+
+			connection = MYSQL.connect(
+
+				user="vla",
+				password="vla::SQL",
+				host="192.168.162.65",
+				database="office",
+			)
+			db = connection.cursor()
+
+			db.execute("DELETE FROM %s WHERE id = %s"%(query["tabName"], query["rowId"]))
+
+			connection.commit()
+			db.close()
+
+
+		except	Exception as E:
+
+			message = patronus(E)
+			print(message)
+			return message
+
+		else:	connection.close()
+	else: 		return "Incorrect query"
+
+
+
+
+
+
+
+
 async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | str | None :
 
 	if	isinstance(query, dict) and len(query) == 1:
@@ -59,6 +96,7 @@ async def add_office_content(query :Dict[str,Dict[str,str]]) -> Dict[str,str] | 
 			return message
 
 		else:	connection.close()
+	else:		return "Incorrect query"
 
 
 
