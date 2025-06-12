@@ -77,7 +77,11 @@ label {
 }*/
 input {
 	overflow-wrap: break-word;
+	/*display: -webkit-flex;*/
 }
+/*input[name="cancel"] {
+	display: none;
+}*/
 /*button.office-tab-content-add {
 	display: inline;
 }*/

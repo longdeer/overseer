@@ -71,7 +71,7 @@ function fetchTabData(tabName /* String */, orderBy /* Number */, descending /* 
 				updButton.textContent = "U";
 				updButton.type = "button";
 				updButton.id = `${tabName}-${row[0]}`;
-				updButton.onclick = event => console.log(event.target.id);
+				updButton.onclick = updRow;
 			})
 		})
 }
@@ -98,7 +98,7 @@ function sortToggle(event /* Event */, orderBy /* Number */, tabName /* String *
 
 
 
-function adaptInputs() {
+function inputsAdapter() {
 
 	document.querySelectorAll("input").forEach(node => {
 		node.addEventListener("input", event => {
@@ -140,6 +140,54 @@ function delRow(event /* Event */) {
 					case 500: response.json().then(data => alert(data.exception)); break;
 				}
 			})
+	}
+}
+
+
+
+
+
+
+
+
+function updRow(event /* Event */) {
+
+	// console.log(event.target);
+	// console.log(event.target.parentNode);
+	// console.log(event.target.parentNode.parentNode);
+
+	var tabName;
+	var scroll;
+	var rowId;
+	var text;
+	var i,c;
+
+	[ tabName,rowId ] = event.target.id.split("-");
+
+	var currentRow = event.target.parentNode.parentNode.children;
+	var currentForm = document.getElementById(`office-tab-content-add-form-${tabName}`).getElementsByTagName("input");
+
+	// currentForm[currentForm.length -1].style.display = "inline";
+	// console.log(`currentRow = ${currentRow}`);
+	// console.log(`currentRow.length = ${currentRow.length}`);
+	// console.log(`currentForm = ${currentForm}`);
+	// console.log(`currentForm.length = ${currentForm.length}`);
+
+	for(i = 0; i <currentForm.length -2; ++i) {
+
+		// console.log(`currentRow[i] = ${currentRow[i].innerText}`);
+		// console.log(`currentForm[i] = ${currentForm[i].value}`);
+		text = currentRow[i].innerText;
+		// console.log(CanvasRenderingContext2D.measureText(text).width);
+		// console.log(canvas.measureText(text).width);
+		currentForm[i].value = "";
+		currentForm[i].style.width = "146px";
+
+		for(c of text) {
+
+			currentForm[i].value += c;
+			if(150 <(scroll = currentForm[i].scrollWidth)) currentForm[i].style.width = scroll + "px";
+		}
 	}
 }
 
