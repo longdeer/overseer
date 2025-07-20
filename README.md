@@ -9,4 +9,4 @@ requirements
 
 installation
 ------------
-``https://github.com/longdeer/flask-overseer.git``
+``git clone https://github.com/longdeer/flask-overseer.git``
