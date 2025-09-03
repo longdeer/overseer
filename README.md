@@ -1,6 +1,6 @@
-flask-overseer
+overseer
 ========
-``flask`` based app for monitoring and controlling
+``flask`` based app for monitoring and controlling ups parameters
 
 requirements
 ------------
@@ -9,4 +9,4 @@ requirements
 
 installation
 ------------
-``git clone https://github.com/longdeer/flask-overseer.git``
+``git clone https://github.com/longdeer/overseer.git``
