@@ -6,6 +6,7 @@ requirements
 ------------
 * ``flask[async]``
 * ``pysnmp`` (with compiled MIB in ~/pysnmp_mibs or site-packages/pysnmp/smi/mibs)
+* ``python-dotenv``
 
 installation
 ------------
@@ -16,6 +17,8 @@ configuration
 .env
 ```
 APP_NAME=
+APP_STATIC_FOLDER=
+APP_TEMPLATES_FOLDER=
 LISTEN_ADDRESS=
 LISTEN_PORT=
 LOGGY_FILE=
