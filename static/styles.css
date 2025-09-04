@@ -1,87 +1,29 @@
-h1 {
-	text-align: center;
-}
-div.snmp-view {
+.monitor-view {
 	display: inline-block;
-	border: 2px solid black;
+	justify-content: center;
+	align-items: center;
+	/*border: 5px solid red;*/
+	padding: 10px;
 }
-/* cc info row style */
-#cc-inputACV {
-	width: 60px;
+.monitor-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/*border: 5px solid red;*/
+	padding: 10px;
 }
-#cc-batteriesDCV {
-	width: 60px;
+.monitor-table {
+	width: 100%;
 }
-#cc-loadPerc {
-	width: 50px;
-}
-#cc-capacityPerc {
-	width: 50px;
-}
-#cc-temperature {
-	width: 50px;
-}
-#cc-frequency {
-	width: 50px;
-}
-#cc-timeRemain {
-	width: 60px;
-}
-/* rx info row style */
-#rx-inputACV {
-	width: 60px;
-}
-#rx-batteriesDCV {
-	width: 60px;
-}
-#rx-loadPerc {
-	width: 50px;
-}
-#rx-capacityPerc {
-	width: 50px;
-}
-#rx-temperature {
-	width: 50px;
-}
-#rx-frequency {
-	width: 50px;
-}
-#rx-timeRemain {
-	width: 60px;
-}
-/* common table style */
-td {
+td.view-content-data {
 	text-align: center;
 	border: 2px solid black;
 	padding: 5px;
 }
-td.snmp-view-content {
-	cursor: help;
+.view-name-data {
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+	width: 100%;
+	border: 2px solid green;
 }
-/* office styles */
-.office-tab-content {
-	display: none;
-}
-/*.office-tab-content label {*/
-label {
-	display: inline-block;
-	width: 130px;
-}
-.office-tab-header-filter {
-	border: none;
-	background-color: white;
-	font-size: 25px;
-}
-/*.office-tab-content-add-form {
-	float: left;
-}*/
-input {
-	overflow-wrap: break-word;
-	/*display: -webkit-flex;*/
-}
-/*input[name="cancel"] {
-	display: none;
-}*/
-/*button.office-tab-content-add {
-	display: inline;
-}*/

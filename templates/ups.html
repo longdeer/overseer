@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="static/styles.css">
+		<script type="text/javascript" src="static/ups.js"></script>
+		<title>UPS Monitor</title>
+	</head>
+	<body onload="new OverseerView({{ names }},{{ timer }})">
+		{% for name in names %}
+			<div class="monitor-view">
+				<h1 class="view-name-data">{{ name }}</h1>
+				<br>
+				<div class="monitor-content">
+					<table class="monitor-table {{ name }}">
+						<tr>
+							{% for desc in description %}
+								<td class="view-content-data">{{ desc }}</td>
+							{% endfor %}
+						</tr>
+						<tr>
+							{% for parameter in parameters %}
+								<td class="view-content-data {{ parameter }}"></td>
+							{% endfor %}
+						</tr>
+					</table>
+				</div>
+			</div>
+		{% endfor %}
+	</body>
+</html>
