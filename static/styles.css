@@ -1,19 +1,26 @@
+.monitor {
+	display: inline-grid;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+	width: 100%;
+}
 .monitor-view {
 	display: inline-block;
 	justify-content: center;
 	align-items: center;
-	/*border: 5px solid red;*/
+	border: 5px solid black;
 	padding: 10px;
 }
 .monitor-content {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/*border: 5px solid red;*/
 	padding: 10px;
 }
 .monitor-table {
 	width: 100%;
+	font-size: 1.3rem;
 }
 td.view-content-data {
 	text-align: center;
@@ -25,5 +32,4 @@ td.view-content-data {
 	text-align: center;
 	align-items: center;
 	width: 100%;
-	border: 2px solid green;
 }
