@@ -34,7 +34,7 @@ async def snmp_polling(
 
 	while True:
 
-		loggy.info(f"Polling {target_addresses} with {parameters}")
+		loggy.debug(f"Polling {target_addresses} with {parameters}")
 		current_poll = {
 
 			target_names[i]: await poll_target(address, parameters, loggy)
