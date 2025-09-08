@@ -67,13 +67,14 @@ async def poll_target(addr :str, parameters :List[str], loggy) -> Dict[str,str] 
 		*map(lambda para : ObjectType(ObjectIdentity("XPPC-MIB", para, 0)), parameters)
 	)
 
-	if errorIndication:	loggy.error(errorIndication)
+	if errorIndication:	loggy.error(f"{addr} error: {errorIndication}")
 	elif(errorStatus):	loggy.error(
 
-		"{} at {}".format(
+		"{} error: {} at {}".format(
 
+			addr,
 			errorStatus.prettyPrint(),
-			errorIndex and varBinds[int(errorIndex) - 1][0] or "?",
+			errorIndex and varBinds[int(errorIndex) - 1][0] or "?"
 		)
 	)
 	else:
