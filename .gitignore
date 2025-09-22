@@ -9,3 +9,4 @@ lib64
 pyvenv.cfg
 .env
 .flaskenv
+node_modules
