@@ -10,3 +10,4 @@ pyvenv.cfg
 .env
 .flaskenv
 node_modules
+_app.js
