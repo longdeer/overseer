@@ -55,12 +55,12 @@ const announcerClients = {};
 
 
 server.on("request",(message,response) => {
-
-	console.log(message.method);
 	switch(message.method) {
+
 
 		case "GET":
 			switch(message.url) {
+
 
 				case "/client/ups.js":
 
@@ -68,11 +68,13 @@ server.on("request",(message,response) => {
 					response.write(upsJS);
 					break;
 
+
 				case "/client/announcer.js":
 
 					response.writeHead(200,{ "Content-Type": "text/js" });
 					response.write(announcerJS);
 					break;
+
 
 				case "/client/styles.css":
 
@@ -80,11 +82,13 @@ server.on("request",(message,response) => {
 					response.write(styles);
 					break;
 
+
 				case "/ups-monitor":
 
 					response.writeHead(200,{ "Content-Type": "text/html" });
 					response.write(upsView);
 					break;
+
 
 				case "/announcer":
 
@@ -92,31 +96,52 @@ server.on("request",(message,response) => {
 					response.write(announcerView);
 					break;
 
+
 				case "/ups-monitor-setup":
 
 					response.writeHead(200,{ "Content-Type": "application/json" });
 					response.write(JSON.stringify(setup));
 					break;
 
+
 				default: response.writeHead(404); break;
 			}	break;
+
 
 		case "POST":
 			switch(message.url) {
 
 				case "/announcer-receiver":
 
+					let data;
+					let announce;
 					let raw = "";
 
 					message.on("data",chunk => raw += chunk);
-					message.on("end",() => Object.values(announcerClients).forEach(connection => connection.send(raw)));
+					message.on("end",() => {
 
-					break;
+						data = JSON.parse(raw);
+						if(data && typeof(data) === "object" && Object.hasOwn(data, "message")) {
+
+							announce = `---- ${new Date()}\n${data.message}`;
+							Object.values(announcerClients).forEach(connection => connection.send(announce))
+						}
+					});	break;
+
+
+				default: response.writeHead(404); break;
 			}	break;
+
 
 		default: response.writeHead(405); break;
 	}	response.end()
 });
+
+
+
+
+
+
 
 
 server.on("upgrade",(req,sock,head) => {
@@ -146,16 +171,8 @@ server.on("upgrade",(req,sock,head) => {
 				connection = new ws(req,sock,head);
 				const uuid = crypto.randomUUID();
 
-				connection.on("close",() => {
-					delete announcerClients[uuid];
-					console.log("deleted");
-					console.log(Object.keys(announcerClients))
-				});
-				connection.on("open",() => {
-					announcerClients[uuid] = connection
-					console.log("added");
-					console.log(Object.keys(announcerClients))
-				});
+				connection.on("close",() => delete announcerClients[uuid]);
+				connection.on("open",() => announcerClients[uuid] = connection);
 
 				break;
 		}
@@ -169,9 +186,9 @@ server.on("upgrade",(req,sock,head) => {
 
 
 
-targets.forEach((T,i) => setup.targets[T] = names[i]);
-targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
-setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
+// targets.forEach((T,i) => setup.targets[T] = names[i]);
+// targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
+// setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
 server.listen(16200,() => logger.info("starting listening"));
 
 

@@ -33,3 +33,22 @@ td.view-content-data {
 	align-items: center;
 	width: 100%;
 }
+.announcer {
+	width: 100%;
+}
+.announcer-view {
+	margin: 10px auto;
+	border: 2px solid black;
+	width: 70ch;
+	padding: 5px 10px 5px 10px;
+}
+.announcer-message {
+
+	border: 2px solid black;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding-left: 15px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border-radius: 25px;
+}
