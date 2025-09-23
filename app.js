@@ -39,9 +39,13 @@ const parameters = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS || "[]");
 const setup = { targets: {}, parameters, pollNames };
 const ws = require("faye-websocket");
 const upsView = require("fs").readFileSync("./client/ups.html");
+const announcerView = require("fs").readFileSync("./client/announcer.html");
 const upsJS = require("fs").readFileSync("./client/ups.js");
+const announcerJS = require("fs").readFileSync("./client/announcer.js");
 const styles = require("fs").readFileSync("./client/styles.css");
 const server = new require("http").Server();
+const crypto = require("crypto");
+const announcerClients = {};
 
 
 
@@ -50,55 +54,111 @@ const server = new require("http").Server();
 
 
 
-server.on("request",(req,res) => {
-	switch(req.url) {
+server.on("request",(message,response) => {
 
-		case "/client/ups.js":
+	console.log(message.method);
+	switch(message.method) {
 
-			res.writeHead(200,{ "Content-Type": "text/js" });
-			res.write(upsJS);
-			break;
+		case "GET":
+			switch(message.url) {
 
-		case "/client/styles.css":
+				case "/client/ups.js":
 
-			res.writeHead(200,{ "Content-Type": "text/css" });
-			res.write(styles);
-			break;
+					response.writeHead(200,{ "Content-Type": "text/js" });
+					response.write(upsJS);
+					break;
 
-		case "/ups-monitor":
+				case "/client/announcer.js":
 
-			res.writeHead(200,{ "Content-Type": "text/html" });
-			res.write(upsView);
-			break;
+					response.writeHead(200,{ "Content-Type": "text/js" });
+					response.write(announcerJS);
+					break;
 
-		case "/ups-monitor-setup":
+				case "/client/styles.css":
 
-			res.writeHead(200,{ "Content-Type": "application/json" });
-			res.write(JSON.stringify(setup));
-			break;
+					response.writeHead(200,{ "Content-Type": "text/css" });
+					response.write(styles);
+					break;
 
-		default: res.writeHead(404); break;
-	}	res.end()
+				case "/ups-monitor":
+
+					response.writeHead(200,{ "Content-Type": "text/html" });
+					response.write(upsView);
+					break;
+
+				case "/announcer":
+
+					response.writeHead(200,{ "Content-Type": "text/html" });
+					response.write(announcerView);
+					break;
+
+				case "/ups-monitor-setup":
+
+					response.writeHead(200,{ "Content-Type": "application/json" });
+					response.write(JSON.stringify(setup));
+					break;
+
+				default: response.writeHead(404); break;
+			}	break;
+
+		case "POST":
+			switch(message.url) {
+
+				case "/announcer-receiver":
+
+					let raw = "";
+
+					message.on("data",chunk => raw += chunk);
+					message.on("end",() => Object.values(announcerClients).forEach(connection => connection.send(raw)));
+
+					break;
+			}	break;
+
+		default: response.writeHead(405); break;
+	}	response.end()
 });
 
 
 server.on("upgrade",(req,sock,head) => {
-	if(req.url === "/ups-monitor-wscast" && ws.isWebSocket(req)) {
+	if(ws.isWebSocket(req)) {
 
-		const connection = new ws(req,sock,head);
-		let   alive = true;
+		let connection;
 
-		connection.on("close",() => alive = false);
-		connection.on("open", event => {
+		switch(req.url) {
+			case "/ups-monitor-wscast":
 
-			(function broadcast() {
-				if(alive) {
+				let alive = true;
+				connection = new ws(req,sock,head);
 
-					connection.send(JSON.stringify(poller.pollBuffer));
-					setTimeout(broadcast,5000)
-				}
-			})()
-		})
+				connection.on("close",() => alive = false);
+				connection.on("open", event => {
+
+					(function broadcast() { if(alive) {
+
+						connection.send(JSON.stringify(poller.pollBuffer));
+						setTimeout(broadcast,5000)
+
+					}})()
+				});	break;
+
+			case "/announcer-wscast":
+
+				connection = new ws(req,sock,head);
+				const uuid = crypto.randomUUID();
+
+				connection.on("close",() => {
+					delete announcerClients[uuid];
+					console.log("deleted");
+					console.log(Object.keys(announcerClients))
+				});
+				connection.on("open",() => {
+					announcerClients[uuid] = connection
+					console.log("added");
+					console.log(Object.keys(announcerClients))
+				});
+
+				break;
+		}
 	}
 });
 
