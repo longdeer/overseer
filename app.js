@@ -36,7 +36,7 @@ const names = JSON.parse(process.env.UPS_NAMES || "[]");
 const targets = JSON.parse(process.env.UPS_ADDRESSES || "[]");
 const pollNames = JSON.parse(process.env.UPS_SNMP_POLL_NAMES || "[]");
 const parameters = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS || "[]");
-const setup = { targets: {}, parameters, pollNames };
+const monitorSetup = { targets: {}, parameters, pollNames };
 const ws = require("faye-websocket");
 const upsView = require("fs").readFileSync("./client/ups.html");
 const announcerView = require("fs").readFileSync("./client/announcer.html");
@@ -46,6 +46,7 @@ const styles = require("fs").readFileSync("./client/styles.css");
 const server = new require("http").Server();
 const crypto = require("crypto");
 const announcerClients = {};
+const announcerHistory = [];
 
 
 
@@ -100,7 +101,14 @@ server.on("request",(message,response) => {
 				case "/ups-monitor-setup":
 
 					response.writeHead(200,{ "Content-Type": "application/json" });
-					response.write(JSON.stringify(setup));
+					response.write(JSON.stringify(monitorSetup));
+					break;
+
+
+				case "/announcer-setup":
+
+					response.writeHead(200,{ "Content-Type": "application/json" });
+					response.write(JSON.stringify(announcerHistory));
 					break;
 
 
@@ -124,6 +132,10 @@ server.on("request",(message,response) => {
 						if(data && typeof(data) === "object" && Object.hasOwn(data, "message")) {
 
 							announce = `---- ${new Date()}\n${data.message}`;
+							announcerHistory.push(announce);
+
+							if(100 <announcerHistory.length) announcerHistory.shift();
+
 							Object.values(announcerClients).forEach(connection => connection.send(announce))
 						}
 					});	break;
@@ -186,7 +198,7 @@ server.on("upgrade",(req,sock,head) => {
 
 
 
-// targets.forEach((T,i) => setup.targets[T] = names[i]);
+// targets.forEach((T,i) => monitorSetup.targets[T] = names[i]);
 // targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
 // setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
 server.listen(16200,() => logger.info("starting listening"));

@@ -103,6 +103,7 @@ function upsView() {
 			},	10000)
 		})
 	})
+	.catch(E => console.error(E))
 }
 
 
