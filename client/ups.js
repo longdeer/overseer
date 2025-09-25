@@ -31,7 +31,6 @@ function upsView() {
 			let valueRow;
 			let nameCell;
 			let valueCell;
-			let i;
 
 			Object.values(targets).forEach(v => {
 
