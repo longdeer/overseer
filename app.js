@@ -7,8 +7,19 @@
 
 
 require("dotenv").config({ quiet: true });
+const community = process.env.SNMP_COMMUNITY || "";
+const names = JSON.parse(process.env.UPS_NAMES || "[]");
+const targets = JSON.parse(process.env.UPS_ADDRESSES || "[]");
+const pollNames = JSON.parse(process.env.UPS_SNMP_POLL_NAMES || "[]");
+const parameters = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS || "[]");
+const snmpPollTimer = process.env.UPS_SNMP_POLL_TIMER;
+const hostAddress = process.env.LISTEN_ADDRESS;
+const hostPort = process.env.LISTEN_PORT;
+const logFile = process.env.LOGGY_FILE;
+const appName = process.env.APP_NAME;
 
 
+const { XPPC } = require("./modules/snmp.js");
 const { createLogger } = require("winston");
 const { Console } = require("winston").transports;
 const { File } = require("winston").transports;
@@ -20,28 +31,22 @@ const logger = createLogger({
 	format: combine(
 
 		timestamp({ format: "DD/MM/YYYY HHmm" }),
-		printf(({ level, message, timestamp }) => `${timestamp} @${process.env.APP_NAME.toLowerCase()} ${level.toUpperCase()} : ${message}`)
+		printf(({ level, message, timestamp }) => `${timestamp} @${appName.toLowerCase()} ${level.toUpperCase()} : ${message}`)
 	),
-	transports: [ new File({ filename: process.env.LOGGY_FILE }) ]
+	transports: [ new File({ filename: logFile }) ]
 });
-const { XPPC } = require("./modules/snmp.js");
-const poller = new XPPC(logger);
+
+
 const SNMPOptions = { timeout: 500, retries: 0 };
-const community = process.env.SNMP_COMMUNITY || "";
-const names = JSON.parse(process.env.UPS_NAMES || "[]");
-const targets = JSON.parse(process.env.UPS_ADDRESSES || "[]");
-const pollNames = JSON.parse(process.env.UPS_SNMP_POLL_NAMES || "[]");
-const parameters = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS || "[]");
 const monitorSetup = { targets: {}, parameters, pollNames };
-const ws = require("faye-websocket");
-const upsView = require("fs").readFileSync("./client/ups.html");
+const poller = new XPPC(logger);
+const server = new require("http").Server();
 const announcerView = require("fs").readFileSync("./client/announcer.html");
-const upsJS = require("fs").readFileSync("./client/ups.js");
 const announcerJS = require("fs").readFileSync("./client/announcer.js");
 const styles = require("fs").readFileSync("./client/styles.css");
-const server = new require("http").Server();
-const hostAddress = process.env.LISTEN_ADDRESS;
-const hostPort = process.env.LISTEN_PORT;
+const upsView = require("fs").readFileSync("./client/ups.html");
+const upsJS = require("fs").readFileSync("./client/ups.js");
+const ws = require("faye-websocket");
 const crypto = require("crypto");
 const announcerClients = {};
 const announcerHistory = [];
@@ -213,7 +218,7 @@ server.on("upgrade",(req,sock,head) => {
 					(function broadcast() { if(alive) {
 
 						webSocket.send(JSON.stringify(poller.pollBuffer));
-						setTimeout(broadcast,5000)
+						setTimeout(broadcast, snmpPollTimer)
 
 					}})()
 				});	break;
@@ -253,7 +258,7 @@ server.on("upgrade",(req,sock,head) => {
 
 targets.forEach((T,i) => monitorSetup.targets[T] = names[i]);
 targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
-setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
+setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)), snmpPollTimer);
 server.listen(hostPort, hostAddress,() => logger.info(`starting listening ${hostAddress}:${hostPort}`));
 
 
