@@ -24,7 +24,7 @@ function initAnnouncer() {
 				messageBlock.className = "announcer-message";
 				messageBlock.innerText = message;
 				announcer.appendChild(messageBlock)
-			})
+			});	announcer.scrollIntoView(false);//window.scrollTo(0, document.body.scrollHeight)
 		})
 	})
 	.catch(E => console.error(E));
@@ -35,7 +35,8 @@ function initAnnouncer() {
 		messageBlock = document.createElement("pre");
 		messageBlock.className = "announcer-message";
 		messageBlock.innerText = event.data;
-		announcer.appendChild(messageBlock)
+		announcer.appendChild(messageBlock);
+		announcer.scrollIntoView(false)
 	}
 }
 

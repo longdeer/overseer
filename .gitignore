@@ -11,3 +11,4 @@ pyvenv.cfg
 .flaskenv
 node_modules
 _app.js
+announce.py

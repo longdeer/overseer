@@ -6,7 +6,7 @@
 
 
 
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 
 const { createLogger } = require("winston");
@@ -22,11 +22,7 @@ const logger = createLogger({
 		timestamp({ format: "DD/MM/YYYY HHmm" }),
 		printf(({ level, message, timestamp }) => `${timestamp} @${process.env.APP_NAME.toLowerCase()} ${level.toUpperCase()} : ${message}`)
 	),
-	transports: [
-
-		new Console(),
-		new File({ filename: process.env.LOGGY_FILE })
-	]
+	transports: [ new File({ filename: process.env.LOGGY_FILE }) ]
 });
 const { XPPC } = require("./modules/snmp.js");
 const poller = new XPPC(logger);
@@ -44,6 +40,8 @@ const upsJS = require("fs").readFileSync("./client/ups.js");
 const announcerJS = require("fs").readFileSync("./client/announcer.js");
 const styles = require("fs").readFileSync("./client/styles.css");
 const server = new require("http").Server();
+const hostAddress = process.env.LISTEN_ADDRESS;
+const hostPort = process.env.LISTEN_PORT;
 const crypto = require("crypto");
 const announcerClients = {};
 const announcerHistory = [];
@@ -56,11 +54,19 @@ const announcerHistory = [];
 
 
 server.on("request",(message,response) => {
-	switch(message.method) {
+
+
+	const requestedURL = message.url;
+	const requestedMethod = message.method;
+	const remoteAddress = message.socket.remoteAddress;
+	logger.info(`${remoteAddress} ${requestedMethod} ${requestedURL}`);
+
+
+	switch(requestedMethod) {
 
 
 		case "GET":
-			switch(message.url) {
+			switch(requestedURL) {
 
 
 				case "/client/ups.js":
@@ -112,12 +118,19 @@ server.on("request",(message,response) => {
 					break;
 
 
-				default: response.writeHead(404); break;
+				default:
+
+					logger.warn(`${requestedURL} not found`);
+					response.writeHead(404);
+					break;
+
+
 			}	break;
 
 
 		case "POST":
-			switch(message.url) {
+			switch(requestedURL) {
+
 
 				case "/announcer-receiver":
 
@@ -129,11 +142,13 @@ server.on("request",(message,response) => {
 					message.on("end",() => {
 
 						data = JSON.parse(raw);
-						if(data && typeof(data) === "object" && Object.hasOwn(data, "message")) {
+						if(data && typeof(data) === "object" && typeof(data.message) === "string") {
 
-							announce = `---- ${new Date()}\n${data.message}`;
+							announce = data.message;
+							logger.info(`Received ${announce.length} symbols from ${remoteAddress}`);
+
+							announce = `---- ${new Date()}\n${announce}`;
 							announcerHistory.push(announce);
-
 							if(100 <announcerHistory.length) announcerHistory.shift();
 
 							Object.values(announcerClients).forEach(connection => connection.send(announce))
@@ -141,11 +156,23 @@ server.on("request",(message,response) => {
 					});	break;
 
 
-				default: response.writeHead(404); break;
+				default:
+
+					logger.warn(`${requestedURL} not found`);
+					response.writeHead(404);
+					break;
+
+
 			}	break;
 
 
-		default: response.writeHead(405); break;
+		default:
+
+			logger.warn(`${requestedMethod} not supported`);
+			response.writeHead(405);
+			break;
+
+
 	}	response.end()
 });
 
@@ -157,22 +184,35 @@ server.on("request",(message,response) => {
 
 
 server.on("upgrade",(req,sock,head) => {
+
+
+	const requestedURL = req.url;
+	const remoteAddress = sock.remoteAddress;
+	const uuid = crypto.randomUUID();
+	logger.info(`${remoteAddress} UPGRADE ${requestedURL} (${uuid})`);
+
+
 	if(ws.isWebSocket(req)) {
 
-		let connection;
+		let webSocket;
 
 		switch(req.url) {
 			case "/ups-monitor-wscast":
 
 				let alive = true;
-				connection = new ws(req,sock,head);
+				webSocket = new ws(req,sock,head);
 
-				connection.on("close",() => alive = false);
-				connection.on("open", event => {
+				webSocket.on("close",() => {
 
+					logger.info(`Closed ups-monitor websocket for ${remoteAddress} (${uuid})`);
+					alive = false
+				});
+				webSocket.on("open", event => {
+
+					logger.info(`Opened ups-monitor websocket for ${remoteAddress} (${uuid})`);
 					(function broadcast() { if(alive) {
 
-						connection.send(JSON.stringify(poller.pollBuffer));
+						webSocket.send(JSON.stringify(poller.pollBuffer));
 						setTimeout(broadcast,5000)
 
 					}})()
@@ -180,12 +220,25 @@ server.on("upgrade",(req,sock,head) => {
 
 			case "/announcer-wscast":
 
-				connection = new ws(req,sock,head);
-				const uuid = crypto.randomUUID();
+				webSocket = new ws(req,sock,head);
 
-				connection.on("close",() => delete announcerClients[uuid]);
-				connection.on("open",() => announcerClients[uuid] = connection);
+				webSocket.on("close",() => {
 
+					logger.info(`Closed announcer websocket for ${remoteAddress} (${uuid})`);
+					delete announcerClients[uuid]
+				});
+				webSocket.on("open",() => {
+
+					logger.info(`Opened announcer websocket for ${remoteAddress} (${uuid})`);
+					announcerClients[uuid] = webSocket
+
+				});	break;
+
+
+			default:
+
+				logger.warn(`${requestedURL} not found`);
+				response.writeHead(404);
 				break;
 		}
 	}
@@ -198,10 +251,10 @@ server.on("upgrade",(req,sock,head) => {
 
 
 
-// targets.forEach((T,i) => monitorSetup.targets[T] = names[i]);
-// targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
-// setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
-server.listen(16200,() => logger.info("starting listening"));
+targets.forEach((T,i) => monitorSetup.targets[T] = names[i]);
+targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
+setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)),5000);
+server.listen(hostPort, hostAddress,() => logger.info(`starting listening ${hostAddress}:${hostPort}`));
 
 
 
