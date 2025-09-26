@@ -20,8 +20,8 @@ function upsView() {
 			const stats = {};
 			const updates = {};
 			const targets = data.targets;
-			const pollNames = data.pollNames;
 			const parameters = data.parameters;
+			const descriptions = data.descriptions;
 
 			let monitorView;
 			let viewName;
@@ -50,7 +50,7 @@ function upsView() {
 				nameRow = viewTable.insertRow();
 				valueRow = viewTable.insertRow();
 
-				pollNames.forEach((name,i) => {
+				descriptions.forEach((name,i) => {
 
 					nameCell = nameRow.insertCell();
 					valueCell = valueRow.insertCell();
