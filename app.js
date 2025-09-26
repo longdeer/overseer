@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 require("dotenv").config({ quiet: true });
 const community = process.env.SNMP_COMMUNITY || "";
 const names = JSON.parse(process.env.UPS_NAMES || "[]");
@@ -15,41 +7,32 @@ const parameters = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS || "[]");
 const snmpPollTimer = process.env.UPS_SNMP_POLL_TIMER;
 const hostAddress = process.env.LISTEN_ADDRESS;
 const hostPort = process.env.LISTEN_PORT;
-const logFile = process.env.LOGGY_FILE;
 const appName = process.env.APP_NAME;
 
 
-const { XPPC } = require("./modules/snmp.js");
-const { createLogger } = require("winston");
-const { Console } = require("winston").transports;
-const { File } = require("winston").transports;
-const { timestamp } = require("winston").format;
-const { combine } = require("winston").format;
-const { printf } = require("winston").format;
-const logger = createLogger({
-
-	format: combine(
-
-		timestamp({ format: "DD/MM/YYYY HHmm" }),
-		printf(({ level, message, timestamp }) => `${timestamp} @${appName.toLowerCase()} ${level.toUpperCase()} : ${message}`)
-	),
-	transports: [ new File({ filename: logFile }) ]
-});
 
 
+const loggy = require("./modules/loggy.js").getRotatedLoggy(process.env.LOGGY_FOLDER, appName);
+const XPPC = require("./modules/snmp.js").XPPC;
+const ws = require("faye-websocket");
+const fsextra = require("fs-extra");
+const crypto = require("crypto");
+const fspath = require("path");
+
+
+
+
+const announcerView = fsextra.readFileSync("./client/announcer.html");
+const announcerJS = fsextra.readFileSync("./client/announcer.js");
+const styles = fsextra.readFileSync("./client/styles.css");
+const upsView = fsextra.readFileSync("./client/ups.html");
+const upsJS = fsextra.readFileSync("./client/ups.js");
 const SNMPOptions = { timeout: 500, retries: 0 };
 const monitorSetup = { targets: {}, parameters, pollNames };
-const poller = new XPPC(logger);
-const server = new require("http").Server();
-const announcerView = require("fs").readFileSync("./client/announcer.html");
-const announcerJS = require("fs").readFileSync("./client/announcer.js");
-const styles = require("fs").readFileSync("./client/styles.css");
-const upsView = require("fs").readFileSync("./client/ups.html");
-const upsJS = require("fs").readFileSync("./client/ups.js");
-const ws = require("faye-websocket");
-const crypto = require("crypto");
 const announcerClients = {};
 const announcerHistory = [];
+const poller = new XPPC(loggy);
+const server = new require("http").Server();
 
 
 
@@ -64,7 +47,7 @@ server.on("request",(message,response) => {
 	const requestedURL = message.url;
 	const requestedMethod = message.method;
 	const remoteAddress = message.socket.remoteAddress;
-	logger.info(`${remoteAddress} ${requestedMethod} ${requestedURL}`);
+	loggy.info(`${remoteAddress} ${requestedMethod} ${requestedURL}`);
 
 
 	switch(requestedMethod) {
@@ -125,7 +108,7 @@ server.on("request",(message,response) => {
 
 				default:
 
-					logger.warn(`${requestedURL} not found`);
+					loggy.warn(`${requestedURL} not found`);
 					response.writeHead(404);
 					break;
 
@@ -150,7 +133,7 @@ server.on("request",(message,response) => {
 						if(data && typeof(data) === "object" && typeof(data.message) === "string") {
 
 							announce = data.message;
-							logger.info(`Received ${announce.length} symbols from ${remoteAddress}`);
+							loggy.info(`Received ${announce.length} symbols from ${remoteAddress}`);
 
 							announce = `---- ${new Date()}\n${announce}`;
 							announcerHistory.push(announce);
@@ -163,7 +146,7 @@ server.on("request",(message,response) => {
 
 				default:
 
-					logger.warn(`${requestedURL} not found`);
+					loggy.warn(`${requestedURL} not found`);
 					response.writeHead(404);
 					break;
 
@@ -173,7 +156,7 @@ server.on("request",(message,response) => {
 
 		default:
 
-			logger.warn(`${requestedMethod} not supported`);
+			loggy.warn(`${requestedMethod} not supported`);
 			response.writeHead(405);
 			break;
 
@@ -194,7 +177,7 @@ server.on("upgrade",(req,sock,head) => {
 	const requestedURL = req.url;
 	const remoteAddress = sock.remoteAddress;
 	const uuid = crypto.randomUUID();
-	logger.info(`${remoteAddress} UPGRADE ${requestedURL} (${uuid})`);
+	loggy.info(`${remoteAddress} UPGRADE ${requestedURL} (${uuid})`);
 
 
 	if(ws.isWebSocket(req)) {
@@ -205,16 +188,16 @@ server.on("upgrade",(req,sock,head) => {
 			case "/ups-monitor-wscast":
 
 				let alive = true;
-				webSocket = new ws(req,sock,head);
 
+				webSocket = new ws(req,sock,head);
 				webSocket.on("close",() => {
 
-					logger.info(`Closed ups-monitor websocket for ${remoteAddress} (${uuid})`);
+					loggy.info(`Closed ups-monitor websocket for ${remoteAddress} (${uuid})`);
 					alive = false
 				});
 				webSocket.on("open", event => {
 
-					logger.info(`Opened ups-monitor websocket for ${remoteAddress} (${uuid})`);
+					loggy.info(`Opened ups-monitor websocket for ${remoteAddress} (${uuid})`);
 					(function broadcast() { if(alive) {
 
 						webSocket.send(JSON.stringify(poller.pollBuffer));
@@ -226,15 +209,14 @@ server.on("upgrade",(req,sock,head) => {
 			case "/announcer-wscast":
 
 				webSocket = new ws(req,sock,head);
-
 				webSocket.on("close",() => {
 
-					logger.info(`Closed announcer websocket for ${remoteAddress} (${uuid})`);
+					loggy.info(`Closed announcer websocket for ${remoteAddress} (${uuid})`);
 					delete announcerClients[uuid]
 				});
 				webSocket.on("open",() => {
 
-					logger.info(`Opened announcer websocket for ${remoteAddress} (${uuid})`);
+					loggy.info(`Opened announcer websocket for ${remoteAddress} (${uuid})`);
 					announcerClients[uuid] = webSocket
 
 				});	break;
@@ -242,7 +224,7 @@ server.on("upgrade",(req,sock,head) => {
 
 			default:
 
-				logger.warn(`${requestedURL} not found`);
+				loggy.warn(`${requestedURL} not found`);
 				response.writeHead(404);
 				break;
 		}
@@ -259,7 +241,7 @@ server.on("upgrade",(req,sock,head) => {
 targets.forEach((T,i) => monitorSetup.targets[T] = names[i]);
 targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions));
 setInterval(() => targets.forEach(T => poller.getTarget(T, community, parameters, SNMPOptions)), snmpPollTimer);
-server.listen(hostPort, hostAddress,() => logger.info(`starting listening ${hostAddress}:${hostPort}`));
+server.listen(hostPort, hostAddress,() => loggy.info(`starting ${appName} ${hostAddress}:${hostPort}`));
 
 
 

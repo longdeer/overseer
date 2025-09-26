@@ -22,7 +22,7 @@ module.exports.getRotatedLoggy = function getRotatedLoggy(loggerFolder, loggerNa
 	const d = String(point.getDate()).padStart(2,"0");
 
 	const currentFolder = fspath.join(loggerFolder, Y, m);
-	const currentFile = fspath.join(currentFolder, `${d}${loggerName}.loggy`);
+	const currentFile = fspath.join(currentFolder, `${loggerName}${d}${m}${Y}.loggy`);
 
 	fsextra.ensureDirSync(currentFolder);
 	const loggy = createLogger({
@@ -52,7 +52,7 @@ module.exports.getRotatedLoggy = function getRotatedLoggy(loggerFolder, loggerNa
 		const d = String(point.getDate()).padStart(2,"0");
 
 		const currentFolder = fspath.join(loggerFolder, Y, m);
-		const currentFile = fspath.join(currentFolder, `${d}${loggerName}.loggy`);
+		const currentFile = fspath.join(currentFolder, `${loggerName}${d}${m}${Y}.loggy`);
 
 		point.setHours(0);
 		point.setMinutes(0);
