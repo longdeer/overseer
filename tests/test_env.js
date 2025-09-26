@@ -16,7 +16,7 @@ describe(".env", function() {
 	var snmpParameters;
 
 	it("APP_NAME", function() {
-		assert.ok(typeof(process.env.APP_NAME) === "string")
+		assert.strictEqual(typeof(process.env.APP_NAME), "string")
 	});
 	it("LISTEN_ADDRESS", function() {
 		assert.match(process.env.LISTEN_ADDRESS, ip4regex)
@@ -28,20 +28,20 @@ describe(".env", function() {
 		assert.ok(port <65536)
 	});
 	it("LOGGY_FOLDER", function() {
-		assert.equal(fsextra.accessSync(process.env.LOGGY_FOLDER, fsextra.constants.W_OK), undefined)
+		assert.strictEqual(fsextra.accessSync(process.env.LOGGY_FOLDER, fsextra.constants.W_OK), undefined)
 	});
 	it("UPS_NAMES", function() {
 
 		const UPS_NAMES = JSON.parse(process.env.UPS_NAMES);
 		assert.ok(Array.isArray(UPS_NAMES));
 		snmpTargets = UPS_NAMES.length;
-		UPS_NAMES.forEach(name => assert.ok(typeof(name) === "string"))
+		UPS_NAMES.forEach(name => assert.strictEqual(typeof(name), "string"))
 	});
 	it("UPS_ADDRESSES", function() {
 
 		const UPS_ADDRESSES = JSON.parse(process.env.UPS_ADDRESSES);
 		assert.ok(Array.isArray(UPS_ADDRESSES));
-		assert.equal(snmpTargets, UPS_ADDRESSES.length);
+		assert.strictEqual(snmpTargets, UPS_ADDRESSES.length);
 		UPS_ADDRESSES.forEach(address => assert.match(address, ip4regex))
 	});
 	it("UPS_SNMP_POLL_PARAMETERS", function() {
@@ -49,14 +49,14 @@ describe(".env", function() {
 		const UPS_SNMP_POLL_PARAMETERS = JSON.parse(process.env.UPS_SNMP_POLL_PARAMETERS);
 		assert.ok(Array.isArray(UPS_SNMP_POLL_PARAMETERS));
 		snmpParameters = UPS_SNMP_POLL_PARAMETERS.length;
-		UPS_SNMP_POLL_PARAMETERS.forEach(para => assert.ok(typeof(para) === "string"))
+		UPS_SNMP_POLL_PARAMETERS.forEach(para => assert.strictEqual(typeof(para), "string"))
 	});
 	it("UPS_SNMP_POLL_NAMES", function() {
 
 		const UPS_SNMP_POLL_NAMES = JSON.parse(process.env.UPS_SNMP_POLL_NAMES);
 		assert.ok(Array.isArray(UPS_SNMP_POLL_NAMES));
-		assert.equal(snmpParameters, UPS_SNMP_POLL_NAMES.length);
-		UPS_SNMP_POLL_NAMES.forEach(name => assert.ok(typeof(name) === "string"))
+		assert.strictEqual(snmpParameters, UPS_SNMP_POLL_NAMES.length);
+		UPS_SNMP_POLL_NAMES.forEach(name => assert.strictEqual(typeof(name), "string"))
 	});
 	it("UPS_SNMP_POLL_TIMER", function() {
 
@@ -69,7 +69,7 @@ describe(".env", function() {
 		)
 	});
 	it("SNMP_COMMUNITY", function() {
-		assert.ok(typeof(process.env.SNMP_COMMUNITY) === "string")
+		assert.strictEqual(typeof(process.env.SNMP_COMMUNITY), "string")
 	});
 	it("SNMP_PORT", function() {
 

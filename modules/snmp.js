@@ -6,8 +6,7 @@
 
 
 
-module.exports.XPPC = class XPPC {
-
+class XPPC {
 	constructor(logger) {
 
 		this.snmp = require("net-snmp");
@@ -33,11 +32,14 @@ module.exports.XPPC = class XPPC {
 		"1.3.6.1.4.1.935.1.1.1.3.2.4.0": "upsSmartInputFrequency",
 		"1.3.6.1.4.1.935.1.1.1.2.2.4.0": "upsSmartBatteryRunTimeRemaining"
 	}
-	getTarget(target, community, parameters, options) {
+	checkoutBuffer(target) {
 
 		if(!this.pollBuffer[target]) this.pollBuffer[target] = {};
+		return this.pollBuffer[target]
+	}
+	getTarget(target, community, parameters, options) {
 
-		const current = this.pollBuffer[target];
+		const current = this.checkoutBuffer(target);
 		let   parameter;
 
 		this.snmp.createSession(target, community, options)
@@ -58,6 +60,15 @@ module.exports.XPPC = class XPPC {
 		})
 	}
 }
+
+
+
+
+
+
+
+
+module.exports.XPPC = XPPC;
 
 
 
