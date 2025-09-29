@@ -20,6 +20,7 @@ class Overseer {
 		this.snmpPoller = options.snmp.poller;
 		this.monitorSetup = {
 
+			timer: options.snmp.pollTimer,
 			targets: options.snmp.targets,
 			parameters: options.snmp.parameters,
 			descriptions: options.snmp.descriptions

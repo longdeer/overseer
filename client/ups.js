@@ -19,6 +19,7 @@ function upsView() {
 			const views = {};
 			const stats = {};
 			const updates = {};
+			const timer = data.timer *2;
 			const targets = data.targets;
 			const parameters = data.parameters;
 			const descriptions = data.descriptions;
@@ -83,26 +84,29 @@ function upsView() {
 					const data = message[ip];
 					const stat = Object.keys(data);
 
-					updates[name] = new Date();
-					views[name].style.backgroundColor = stat.length ? "white" : "yellow";
-					stat.forEach(unit => {
+					if(stat.length) {
 
-						stats[name][unit].innerText = data[unit];
-						if(unit === "upsSmartBatteryRunTimeRemaining" && data[unit] !== "-")
-							views[name].style.backgroundColor = "red"
-					})
+						views[name].style.backgroundColor = "white";
+						updates[name] = new Date();
+						stat.forEach(unit => {
+
+							stats[name][unit].innerText = data[unit];
+							if(unit === "upsSmartBatteryRunTimeRemaining" && data[unit] !== "-")
+
+								views[name].style.backgroundColor = "red"
+						})
+					}	else	views[name].style.backgroundColor = "yellow"
 				})
 			}
-			setInterval(() => {
-				Object.keys(updates).forEach(name => {
-
-					if(10000 <new Date() - updates[name])
-						views[name].style.backgroundColor = "yellow"
-				})
-			},	10000)
+			setTimeout(() => Object.keys(updates).forEach(name => markDead(name, updates, views, timer)), timer)
 		})
 	})
 	.catch(E => console.error(E))
+}
+function markDead(name, schedule, container, timer) {
+
+	if(timer <new Date() - schedule[name]) container[name].style.backgroundColor = "yellow";
+	else setTimeout(markDead, timer, name, schedule, container, timer)
 }
 
 
