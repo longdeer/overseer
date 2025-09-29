@@ -12,6 +12,7 @@ const crypto = require("crypto");
 class Overseer {
 	constructor(options, loggy) {
 
+
 		this.loggy = loggy
 		this.announcerClients = {};
 		this.announcerHistory = [];
@@ -155,8 +156,6 @@ class Overseer {
 		});
 
 
-
-
 		this.server.on("upgrade",(req,sock,head) => {
 
 
@@ -167,15 +166,15 @@ class Overseer {
 
 
 			if(ws.isWebSocket(req)) {
-
 				let webSocket;
+
 
 				switch(req.url) {
 					case "/ups-monitor-wscast":
 
 						let alive = true;
-
 						webSocket = new ws(req,sock,head);
+
 						webSocket.on("close",() => {
 
 							this.loggy.info(`Closed ups-monitor websocket for ${remoteAddress} (${uuid})`);
@@ -185,6 +184,7 @@ class Overseer {
 
 							this.loggy.info(`Opened ups-monitor websocket for ${remoteAddress} (${uuid})`);
 							(function broadcast(poller, timer) {
+
 								if(alive) {
 
 									webSocket.send(JSON.stringify(poller.pollBuffer));
@@ -192,6 +192,7 @@ class Overseer {
 
 							}})(this.snmpPoller, this.pollTimer)
 						});	break;
+
 
 					case "/announcer-wscast":
 
