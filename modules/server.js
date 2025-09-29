@@ -13,7 +13,7 @@ class Overseer {
 	constructor(options, loggy) {
 
 
-		this.loggy = loggy
+		this.loggy = loggy;
 		this.announcerClients = {};
 		this.announcerHistory = [];
 		this.pollTimer = options.snmp.pollTimer;
@@ -24,7 +24,7 @@ class Overseer {
 			targets: options.snmp.targets,
 			parameters: options.snmp.parameters,
 			descriptions: options.snmp.descriptions
-		}
+		};
 		this.announcerView = fsextra.readFileSync("./client/announcer.html");
 		this.announcerJS = fsextra.readFileSync("./client/announcer.js");
 		this.styles = fsextra.readFileSync("./client/styles.css");
@@ -176,12 +176,12 @@ class Overseer {
 						let alive = true;
 						webSocket = new ws(req,sock,head);
 
-						webSocket.on("close",() => {
+						webSocket.on("close",event => {
 
 							this.loggy.info(`Closed ups-monitor websocket for ${remoteAddress} (${uuid})`);
 							alive = false
 						});
-						webSocket.on("open", event => {
+						webSocket.on("open",event => {
 
 							this.loggy.info(`Opened ups-monitor websocket for ${remoteAddress} (${uuid})`);
 							(function broadcast(poller, timer) {

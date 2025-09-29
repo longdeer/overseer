@@ -22,6 +22,7 @@
     "faye-websocket": "^0.11.4",
     "fs-extra": "^11.3.2",
     "net-snmp": "^3.25.2",
+    "supertest": "^7.1.4",
     "winston": "^3.17.0"
   }
 }
