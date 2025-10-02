@@ -32,13 +32,13 @@ class XPPC {
 	upsSmartBatteryCurrent				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.7.0" :	0 <V ? `${V} %` : "-";
 	upsSmartBatteryRunTimeRemaining		= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.4.0" :	0 <V ? `${V} sec` : "-";
 	upsBaseBatteryTimeOnBattery			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.2.0" :	0 <V ? `${V} sec` : "-";
-	upsBaseBatteryStatus				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.1.0" :	0 ? "excelent" : 1 ? "good" : 2 ? "normal" : 3 ? "low" : `undefined(${V})`;
-	upsSmartInputLineFailCause			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.5.0" :	1 ? "no transfer yet" :
-																									2 ? "transfer to battery is caused by an over voltage greater than the high transfer voltage" :
-																									3 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
-																									4 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
-																									5 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
-																									6 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
+	upsBaseBatteryStatus				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.1.0" :	V === 0 ? "excelent" : V === 1 ? "good" : V === 2 ? "normal" : V === 3 ? "low" : `undefined(${V})`;
+	upsSmartInputLineFailCause			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.5.0" :	V === 1 ? "no transfer yet" :
+																									V === 2 ? "transfer to battery is caused by an over voltage greater than the high transfer voltage" :
+																									V === 3 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
+																									V === 4 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
+																									V === 5 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
+																									V === 6 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
 																									`undefined(${V})`;
 	oidMapper = {
 
