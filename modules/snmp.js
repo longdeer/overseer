@@ -157,7 +157,8 @@ class XPPC {
 
 					if(this.snmp.isVarbindError(v)) current[parameter] = [ "error",this.snmp.varbindError(v) ];
 					else current[parameter] = this[parameter](v.value)
-				})
+
+				});	this.loggy.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
 			}
 			session.close()
 		})
@@ -222,6 +223,42 @@ class XPPC {
 				RES(current)
 			})
 		})
+	}
+	schedule(options, target, community, interval, parameters) {
+
+		if(Array.isArray(parameters)) {
+			if(Array.isArray(target)) {
+
+				this.loggy.info(`Scheduling ${target.length} targets polling ${parameters.length} parameters`);
+				target.forEach(T => this.getTargetBuffered(T, community, parameters, options));
+				return setInterval(() => target.forEach(T => this.getTargetBuffered(T, community, parameters, options)), interval)
+
+			}	else {
+
+				this.loggy.info(`Scheduling ${target} polling ${parameters.length} parameters`);
+				this.getTargetBuffered(target, community, parameters, options);
+				return setInterval(() => this.getTargetBuffered(target, community, parameters, options), interval)
+			}
+		}	else {
+
+			if(Array.isArray(target)) {
+
+				this.loggy.info(`Scheduling ${target.length} targets walk`);
+				target.forEach(T => this.walkBuffered(T, community, options));
+				return setInterval(() => target.forEach(T => this.walkBuffered(T, community, options)), interval)
+
+			}	else {
+
+				this.loggy.info(`Scheduling ${target} walk`);
+				this.walkBuffered(target, community, options);
+				return setInterval(() => this.walkBuffered(target, community, options), interval)
+			}
+		}
+	}
+	unschedule(intervalId) {
+
+		this.loggy.info(`Unscheduling interval id ${intervalId}`);
+		clearInterval(intervalId)
 	}
 }
 
