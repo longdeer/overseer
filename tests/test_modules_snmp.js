@@ -100,6 +100,9 @@ describe("SNMP module", function() {
 			xppc.pollBuffer["target"]["foo"] = "bar";
 			assert.deepStrictEqual(xppc.checkoutBuffer("target"),{ foo: "bar" });
 
+			xppc.clearBuffer("target");
+			assert.deepStrictEqual(xppc.checkoutBuffer("target"),{});
+
 			assert.strictEqual(logger.info.mock.callCount(),0);
 			assert.strictEqual(logger.warn.mock.callCount(),0);
 		});

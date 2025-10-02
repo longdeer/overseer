@@ -10,7 +10,7 @@ class XPPC {
 	constructor(logger) {
 
 		this.snmp = require("net-snmp");
-		this.logger = logger;
+		this.loggy = logger;
 		this.pollBuffer = {}
 	}
 	upsBaseIdentModel					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.1.1.1.0" :	`${V}`;
@@ -88,9 +88,13 @@ class XPPC {
 		upsBaseBatteryStatus:				"The status of the UPS batteries.",
 		upsSmartInputLineFailCause:			"The reason for the occurrence of the last transfer to UPS battery power.",
 	}
+	clearBuffer(target) {
+
+		this.pollBuffer[target] = {}
+	}
 	checkoutBuffer(target) {
 
-		if(!this.pollBuffer[target]) this.pollBuffer[target] = {};
+		if(!this.pollBuffer[target]) this.clearBuffer(target);
 		return this.pollBuffer[target]
 	}
 	getTargetBuffered(target, community, parameters, options) {
@@ -103,10 +107,14 @@ class XPPC {
 
 			/*
 			 * In case new data couldn't be fetched,
-			 * the buffer state won't change,
-			 * so all data will be accessible.
+			 * the buffer state will be wiped for target,
+			 * so the frontend will be awared.
 			 */
-			if(error) this.logger.warn(`${target} polling error: ${error}`);
+			if(error) {
+
+				this.loggy.warn(`${target} polling error: ${error}`);
+				this.clearBuffer(target)
+			}
 			else {
 
 				Array.prototype.forEach.call(vars,v => {
@@ -116,7 +124,7 @@ class XPPC {
 					if(this.snmp.isVarbindError(v)) current[parameter] = this.snmp.varbindError(v);
 					else current[parameter] = this[parameter](v.value)
 
-				});	this.logger.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
+				});	this.loggy.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
 			}
 			session.close()
 		})
@@ -132,10 +140,14 @@ class XPPC {
 
 			/*
 			 * In case new data couldn't be fetched,
-			 * the buffer state won't change,
-			 * so all data will be accessible.
+			 * the buffer state will be wiped for target,
+			 * so the frontend will be awared.
 			 */
-			if(error) this.logger.warn(`${target} polling error: ${error}`);
+			if(error) {
+
+				this.loggy.warn(`${target} polling error: ${error}`);
+				this.clearBuffer(target)
+			}
 			else {
 
 				Array.prototype.forEach.call(vars,v => {
@@ -159,17 +171,12 @@ class XPPC {
 
 			session.get(parameters.map(para => this[para]()), (error,vars) => {
 
-				/*
-				 * In case new data couldn't be fetched,
-				 * the buffer state won't change,
-				 * so all data will be accessible.
-				 */
 				if(error) {
 
-					this.logger.warn(`${target} polling error: ${error}`);
+					this.loggy.warn(`${target} polling error: ${error}`);
 					REJ(`${target} polling error: ${error}`)
-				}
-				else {
+
+				}	else {
 
 					Array.prototype.forEach.call(vars,v => {
 
@@ -178,7 +185,7 @@ class XPPC {
 						if(this.snmp.isVarbindError(v)) current[parameter] = this.snmp.varbindError(v);
 						else current[parameter] = this[parameter](v.value)
 
-					});	this.logger.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
+					});	this.loggy.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
 				}
 				session.close();
 				RES(current)
@@ -195,17 +202,12 @@ class XPPC {
 
 			session.get(Object.keys(this.oidMapper),(error,vars) => {
 
-				/*
-				 * In case new data couldn't be fetched,
-				 * the buffer state won't change,
-				 * so all data will be accessible.
-				 */
 				if(error) {
 
-					this.logger.warn(`${target} polling error: ${error}`);
+					this.loggy.warn(`${target} polling error: ${error}`);
 					REJ(`${target} polling error: ${error}`)
-				}
-				else {
+
+				}	else {
 
 					Array.prototype.forEach.call(vars,v => {
 
