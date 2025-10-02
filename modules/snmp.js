@@ -93,14 +93,19 @@ class XPPC {
 		if(!this.pollBuffer[target]) this.pollBuffer[target] = {};
 		return this.pollBuffer[target]
 	}
-	getTarget(target, community, parameters, options) {
+	getTargetBuffered(target, community, parameters, options) {
 
-		const current = this.checkoutBuffer(target);
 		let   parameter;
+		const current = this.checkoutBuffer(target);
+		const session = this.snmp.createSession(target, community, options);
 
-		this.snmp.createSession(target, community, options)
-		.get(parameters.map(para => this[para]()), (error,vars) => {
+		session.get(parameters.map(para => this[para]()), (error,vars) => {
 
+			/*
+			 * In case new data couldn't be fetched,
+			 * the buffer state won't change,
+			 * so all data will be accessible.
+			 */
 			if(error) this.logger.warn(`${target} polling error: ${error}`);
 			else {
 
@@ -113,19 +118,93 @@ class XPPC {
 
 				});	this.logger.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
 			}
+			session.close()
+		})
+	}
+	walkBuffered(target, community, options) {
+
+		let   description;
+		let   parameter;
+		const current = this.checkoutBuffer(target);
+		const session = this.snmp.createSession(target, community, options);
+
+		session.get(Object.keys(this.oidMapper),(error,vars) => {
+
+			/*
+			 * In case new data couldn't be fetched,
+			 * the buffer state won't change,
+			 * so all data will be accessible.
+			 */
+			if(error) this.logger.warn(`${target} polling error: ${error}`);
+			else {
+
+				Array.prototype.forEach.call(vars,v => {
+
+					parameter = this.oidMapper[v.oid];
+					description = this.oidDescription[parameter];
+
+					if(this.snmp.isVarbindError(v)) current[parameter] = [ "error",this.snmp.varbindError(v) ];
+					else current[parameter] = this[parameter](v.value)
+				})
+			}
+			session.close()
+		})
+	}
+	getTarget(target, community, parameters, options) {
+		return new Promise((RES,REJ) => {
+
+			let   parameter;
+			const current = {};
+			const session = this.snmp.createSession(target, community, options)
+
+			session.get(parameters.map(para => this[para]()), (error,vars) => {
+
+				/*
+				 * In case new data couldn't be fetched,
+				 * the buffer state won't change,
+				 * so all data will be accessible.
+				 */
+				if(error) {
+
+					this.logger.warn(`${target} polling error: ${error}`);
+					REJ(`${target} polling error: ${error}`)
+				}
+				else {
+
+					Array.prototype.forEach.call(vars,v => {
+
+						parameter = this.oidMapper[v.oid];
+
+						if(this.snmp.isVarbindError(v)) current[parameter] = this.snmp.varbindError(v);
+						else current[parameter] = this[parameter](v.value)
+
+					});	this.logger.info(`${target} poll response: ${Object.keys(current).map(k => `${k}: ${current[k]}`).join(", ")}`)
+				}
+				session.close();
+				RES(current)
+			})
 		})
 	}
 	walk(target, community, options) {
 		return new Promise((RES,REJ) => {
 
-			const report = {};
 			let   description;
 			let   parameter;
+			const current = {};
+			const session = this.snmp.createSession(target, community, options)
 
-			this.snmp.createSession(target, community, options)
-			.get(Object.keys(this.oidMapper),(error,vars) => {
+			session.get(Object.keys(this.oidMapper),(error,vars) => {
 
-				if(error) REJ(`${target} polling error: ${error}`);
+				/*
+				 * In case new data couldn't be fetched,
+				 * the buffer state won't change,
+				 * so all data will be accessible.
+				 */
+				if(error) {
+
+					this.logger.warn(`${target} polling error: ${error}`);
+					REJ(`${target} polling error: ${error}`)
+				}
 				else {
 
 					Array.prototype.forEach.call(vars,v => {
@@ -133,10 +212,12 @@ class XPPC {
 						parameter = this.oidMapper[v.oid];
 						description = this.oidDescription[parameter];
 
-						if(this.snmp.isVarbindError(v)) report[parameter] = [ "error",this.snmp.varbindError(v) ];
-						else report[parameter] = [ this[parameter](v.value),description ]
+						if(this.snmp.isVarbindError(v)) current[parameter] = [ "error",this.snmp.varbindError(v) ];
+						else current[parameter] = [ this[parameter](v.value),description ]
 					})
-				};	RES(report)
+				}
+				session.close();
+				RES(current)
 			})
 		})
 	}

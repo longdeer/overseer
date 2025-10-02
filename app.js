@@ -34,8 +34,8 @@ const session = new server(serverOptions, loggy);
 
 
 snmpPollTargets.forEach((T,i) => serverOptions.snmp.targets[T] = snmpPollNames[i]);
-snmpPollTargets.forEach(T => snmpPoller.getTarget(T, snmpCommunity, snmpPollParameters, SNMPOptions));
-setInterval(() => snmpPollTargets.forEach(T => snmpPoller.getTarget(T, snmpCommunity, snmpPollParameters, SNMPOptions)), snmpPollTimer);
+snmpPollTargets.forEach(T => snmpPoller.getTargetBuffered(T, snmpCommunity, snmpPollParameters, SNMPOptions));
+setInterval(() => snmpPollTargets.forEach(T => snmpPoller.getTargetBuffered(T, snmpCommunity, snmpPollParameters, SNMPOptions)), snmpPollTimer);
 session.server.listen(hostPort, hostAddress,() => loggy.info(`starting ${appName} ${hostAddress}:${hostPort}`));
 
 
