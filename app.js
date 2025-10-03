@@ -8,12 +8,14 @@ const snmpPollTimer = process.env.UPS_SNMP_POLL_TIMER;
 const hostAddress = process.env.LISTEN_ADDRESS;
 const hostPort = process.env.LISTEN_PORT;
 const appName = process.env.APP_NAME;
+const Reader = require("./modules/reader.js");
 const loggy = require("./modules/loggy.js").getRotatedLoggy(process.env.LOGGY_FOLDER, appName);
 const XPPC = require("./modules/snmp.js").XPPC;
 const snmpPoller = new XPPC(loggy);
 const SNMPOptions = { timeout: 500, retries: 0 };
 const serverOptions = {
 
+	reader: new Reader(JSON.parse(process.env.READER_PATHS || "[]")),
 	snmp: {
 
 		descriptions: snmpPollDescritptions,

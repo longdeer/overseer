@@ -27,6 +27,7 @@ class Overseer {
 		};
 		this.announcerView = fsextra.readFileSync("./client/announcer.html");
 		this.announcerJS = fsextra.readFileSync("./client/announcer.js");
+		this.readerView = fsextra.readFileSync("./client/reader.html");
 		this.styles = fsextra.readFileSync("./client/styles.css");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
 		this.upsJS = fsextra.readFileSync("./client/ups.js");
@@ -77,6 +78,13 @@ class Overseer {
 							break;
 
 
+						case "/reader":
+
+							response.writeHead(200,{ "Content-Type": "text/html" });
+							response.write(this.readerView);
+							break;
+
+
 						case "/announcer":
 
 							response.writeHead(200,{ "Content-Type": "text/html" });
@@ -88,6 +96,13 @@ class Overseer {
 
 							response.writeHead(200,{ "Content-Type": "application/json" });
 							response.write(JSON.stringify(this.monitorSetup));
+							break;
+
+
+						case "/reader-setup":
+
+							response.writeHead(200,{ "Content-Type": "application/json" });
+							response.write(JSON.stringify(this.announcerHistory));
 							break;
 
 
