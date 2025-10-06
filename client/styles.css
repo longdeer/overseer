@@ -43,7 +43,6 @@ td.view-content-data {
 	padding: 5px 10px 5px 10px;
 }
 .announcer-message {
-
 	border: 2px solid black;
 	margin-top: 15px;
 	margin-bottom: 15px;
@@ -51,4 +50,20 @@ td.view-content-data {
 	padding-top: 15px;
 	padding-bottom: 15px;
 	border-radius: 25px;
+}
+.reader-folder-item {
+	/*display: grid;*/
+	border: 2px solid black;
+	background-color: white;
+}
+.reader-folder-item:hover {
+	background-color: #E8E7E3;
+}
+.reader-file-item {
+	/*display: grid;*/
+	border: 2px solid blue;
+	background-color: white;
+}
+.reader-file-item:hover {
+	background-color: #E8E7E3;
 }
