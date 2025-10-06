@@ -16,6 +16,7 @@ class Overseer {
 		this.loggy = loggy;
 		this.announcerClients = {};
 		this.announcerHistory = [];
+		this.reader = options.reader;
 		this.pollTimer = options.snmp.pollTimer;
 		this.snmpPoller = options.snmp.poller;
 		this.monitorSetup = {
@@ -31,6 +32,7 @@ class Overseer {
 		this.styles = fsextra.readFileSync("./client/styles.css");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
 		this.upsJS = fsextra.readFileSync("./client/ups.js");
+		this.readerJS = fsextra.readFileSync("./client/reader.js");
 		this.server = new require("http").Server();
 
 
@@ -52,14 +54,21 @@ class Overseer {
 
 						case "/client/ups.js":
 
-							response.writeHead(200,{ "Content-Type": "text/js" });
+							response.writeHead(200,{ "Content-Type": "text/javascript" });
 							response.write(this.upsJS);
+							break;
+
+
+						case "/client/reader.js":
+
+							response.writeHead(200,{ "Content-Type": "text/javascript" });
+							response.write(this.readerJS);
 							break;
 
 
 						case "/client/announcer.js":
 
-							response.writeHead(200,{ "Content-Type": "text/js" });
+							response.writeHead(200,{ "Content-Type": "text/javascript" });
 							response.write(this.announcerJS);
 							break;
 
@@ -96,13 +105,6 @@ class Overseer {
 
 							response.writeHead(200,{ "Content-Type": "application/json" });
 							response.write(JSON.stringify(this.monitorSetup));
-							break;
-
-
-						case "/reader-setup":
-
-							response.writeHead(200,{ "Content-Type": "application/json" });
-							response.write(JSON.stringify(this.announcerHistory));
 							break;
 
 
@@ -224,6 +226,28 @@ class Overseer {
 							this.announcerClients[uuid] = webSocket
 
 						});	break;
+
+
+					case "/reader-wscast":
+
+						webSocket = new ws(req,sock,head);
+						webSocket.on("close",() => this.loggy.info(`Closed reader websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("open",() => {
+
+							this.loggy.info(`Opened reader websocket for ${remoteAddress} (${uuid})`);
+							this.loggy.info(`Reporting ${this.reader.roots.length} root folders`);
+							webSocket.send(JSON.stringify({ roots: this.reader.roots }))
+
+						});
+						webSocket.on("message",event => {
+
+							const parent = event.data;
+							this.loggy.info(`websocket request of ${parent} from ${remoteAddress} (${uuid})`);
+							this.reader.getDir(parent)
+							.then(children => webSocket.send(JSON.stringify({ parent, children })))
+							.catch(E => this.loggy.warn(E))
+						})
+						break;
 
 
 					default:
