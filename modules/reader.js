@@ -1,4 +1,6 @@
 const { readdir } = require("fs-extra").promises;
+const { accessSync } = require("fs-extra");
+const { constants } = require("fs-extra");
 const { join } = require("path");
 
 
@@ -9,31 +11,44 @@ const { join } = require("path");
 
 
 class Reader {
-	constructor(paths /* Array */) {
+	constructor(paths /* Array */, loggy) {
 
-		this.roots = paths
+		this.roots = [];
+		this.loggy = loggy;
+
+		if(Array.isArray(paths)) this.roots = paths.filter(path => {
+
+			try		{ return !accessSync(path, constants.R_OK) }
+			catch(E){ return false }
+
+		});	this.loggy.info(`Rader got ${this.roots.length} root folders`)
 	}
 	getDir(path) {
 		return new Promise((RES,REJ) => {
 
 			readdir(path,{ withFileTypes: true })
-			.then(content => this.getContent(content).then(files => RES(files)).catch(E => REJ(E)))
+			.then(description => this.getContent(description).then(files => RES(files)).catch(E => REJ(E)))
 			.catch(E => REJ(E))
 		})
 	}
-	getContent(content) {
+	getContent(description) {
 		return new Promise((RES,REJ) => {
 
-			try { RES(content.filter(item => {
+			try {
 
-				for(let prop of Object.getOwnPropertySymbols(item))
+				const content = { folders: [], files: []};
+				description.forEach(item => {
 
-					if(prop.description === "type" && item[prop] === 1) return true;
-				return false
+					for(let prop of Object.getOwnPropertySymbols(item))
+						if(prop.description === "type")
 
-				}).map(item => join(item.path, item.name)).sort()
+							if(item[prop] === 1) content.files.push(join(item.path, item.name)); else
+							if(item[prop] === 2) content.folders.push(join(item.path, item.name)); else
+							this.loggy.warn(`Unexpected fs item type ${item[prop]}`)
+				});
 
-			)}	catch(E) { REJ(E) }
+				RES(content)
+			}	catch(E) { REJ(E) }
 		})
 	}
 }
@@ -45,7 +60,7 @@ class Reader {
 
 
 
-module.exports = Reader
+module.exports = Reader;
 
 
 

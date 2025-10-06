@@ -15,7 +15,7 @@ const snmpPoller = new XPPC(loggy);
 const SNMPOptions = { timeout: 500, retries: 0 };
 const serverOptions = {
 
-	reader: new Reader(JSON.parse(process.env.READER_PATHS || "[]")),
+	reader: new Reader(JSON.parse(process.env.READER_PATHS || "[]"), loggy),
 	snmp: {
 
 		descriptions: snmpPollDescritptions,
