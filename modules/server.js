@@ -241,10 +241,10 @@ class Overseer {
 						});
 						webSocket.on("message",event => {
 
-							const parent = event.data;
+							const { parent,indent } = JSON.parse(event.data);
 							this.loggy.info(`websocket request of ${parent} from ${remoteAddress} (${uuid})`);
 							this.reader.getDir(parent)
-							.then(children => webSocket.send(JSON.stringify({ parent, children })))
+							.then(children => webSocket.send(JSON.stringify({ parent, children, indent })))
 							.catch(E => this.loggy.warn(E))
 						})
 						break;

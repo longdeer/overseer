@@ -42,10 +42,10 @@ function initReader() {
 		if(data.roots) {
 
 			console.log(data.roots);
-			const rootList = document.createElement("ul");
+			const rootList = document.createElement("p");
 			data.roots.forEach(path => {
 
-				const root = document.createElement("li");
+				const root = document.createElement("p");
 				root.innerText = path;
 				root.className = "reader-folder-item";
 				root.addEventListener("click",event => {
@@ -56,12 +56,20 @@ function initReader() {
 
 						// expanded.set(event.target, !expanded.get(event.target));
 						// event.target.style.display = expanded.get(event.target) ? "grid" : "none"
-						console.log(`in roots ${event.target.children}`)
+						// console.log(`in roots ${event.target.children}`)
+						(function collapseItems(target) {
+							target.forEach(item => {
+
+								let icSollapsed = item.style.display === "none";
+								item.style.display = icSollapsed ? "grid" : "none";
+								if(icSollapsed) collapseItems(expanded.get(item))
+							})
+						})(expanded.get(event.target))
 
 					}	else {
 
-						expanded.set(event.target, true);
-						ws.send(event.target.innerText)
+						expanded.set(event.target,[]);
+						ws.send(JSON.stringify({ parent: event.target.innerText, indent: 1 }))
 					}
 				});
 
@@ -71,18 +79,20 @@ function initReader() {
 
 			reader.appendChild(rootList)
 
-		}	else if(data.parent && data.children) {
+		}	else if(data.parent && data.children && data.indent) {
 
-			const list = document.createElement("ul");
-			const parent = data.parent;
-			console.log(`parent = ${parent}`);
-			console.log(`children = ${data.children}`);
+			// const list = document.createElement("p");
+			const parent = treeMap.get(data.parent);
+			const indent = data.indent;
+			// console.log(`parent = ${parent}`);
+			// console.log(`children = ${data.children}`);
 
 			data.children.folders.forEach(path => {
 
-				const child = document.createElement("li");
+				const child = document.createElement("p");
 				child.innerText = path;
 				child.className = "reader-folder-item";
+				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
 
 					event.preventDefault();
@@ -90,23 +100,34 @@ function initReader() {
 
 						// expanded.set(event.target, !expanded.get(event.target));
 						// event.target.style.display = expanded.get(event.target) ? "grid" : "none"
-						console.log(`if folders ${event.target.children}`)
+						// console.log(`if folders ${event.target.children}`)
+						(function collapseItems(target) {
+							target.forEach(item => {
+
+								let icSollapsed = item.style.display === "none";
+								item.style.display = icSollapsed ? "grid" : "none";
+								if(icSollapsed) collapseItems(expanded.get(item))
+							})
+						})(expanded.get(event.target))
 
 					}	else {
 
-						expanded.set(event.target, true);
-						ws.send(event.target.innerText)
+						expanded.set(event.target,[]);
+						ws.send(JSON.stringify({ parent: event.target.innerText, indent: indent +1 }))
+						// ws.send(event.target.innerText)
 					}
 				});
-
-				list.appendChild(child);
-				treeMap.set(path, child)
+				parent.after(child);
+				// list.appendChild(child);
+				treeMap.set(path, child);
+				expanded.get(parent).push(child)
 			});
 			data.children.files.forEach(path => {
 
-				const child = document.createElement("li");
+				const child = document.createElement("p");
 				child.innerText = path;
 				child.className = "reader-file-item";
+				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
 
 					event.preventDefault();
@@ -118,16 +139,18 @@ function initReader() {
 
 					}	else {
 
-						expanded.set(event.target, true);
-						ws.send(event.target.innerText)
+						expanded.set(event.target,[]);
+						ws.send(JSON.stringify({ parent: event.target.innerText, indent: indent +1 }))
+						// ws.send(event.target.innerText)
 					}
 				});
 
-				list.appendChild(child);
+				parent.after(child);
+				// list.appendChild(child);
 				treeMap.set(path, child)
 			});
 
-			treeMap.get(parent).appendChild(list)
+			// treeMap.get(parent).appendChild(list)
 
 		}	else console.error("Improper data")
 	});

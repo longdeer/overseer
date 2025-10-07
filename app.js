@@ -28,7 +28,7 @@ const serverOptions = {
 const server = require("./modules/server.js");
 const session = new server(serverOptions, loggy);
 snmpPollTargets.forEach((T,i) => serverOptions.snmp.targets[T] = snmpPollNames[i]);
-snmpPoller.schedule(SNMPOptions, snmpPollTargets, snmpCommunity, snmpPollTimer, snmpPollParameters);
+// snmpPoller.schedule(SNMPOptions, snmpPollTargets, snmpCommunity, snmpPollTimer, snmpPollParameters);
 session.server.listen(hostPort, hostAddress,() => loggy.info(`starting ${appName} ${hostAddress}:${hostPort}`));
 
 
