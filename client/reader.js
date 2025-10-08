@@ -19,10 +19,10 @@ function initReader() {
 
 		if(data.roots) {
 
-			data.roots.forEach(path => {
+			data.roots.forEach(([ name,path ]) => {
 
 				const root = document.createElement("p");
-				root.innerText = path;
+				root.innerText = name;
 				root.className = "reader-folder-item";
 				root.addEventListener("click",event => {
 
@@ -31,7 +31,7 @@ function initReader() {
 					else {
 
 						structure.set(event.target,[]);
-						ws.send(JSON.stringify({ parent: event.target.innerText, indent: 1 }))
+						ws.send(JSON.stringify({ parent: path, indent: 1 }))
 					}
 				});
 				links.set(path, root);
@@ -43,10 +43,10 @@ function initReader() {
 			const parent = links.get(data.parent);
 			const indent = data.indent;
 
-			data.children.folders.forEach(path => {
+			data.children.folders.forEach(([ name,path ]) => {
 
 				const child = document.createElement("p");
-				child.innerText = path;
+				child.innerText = name;
 				child.className = "reader-folder-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
@@ -56,17 +56,17 @@ function initReader() {
 					else {
 
 						structure.set(event.target,[]);
-						ws.send(JSON.stringify({ parent: event.target.innerText, indent: indent +1 }))
+						ws.send(JSON.stringify({ parent: path, indent: indent +1 }))
 					}
 				});
 				parent.after(child);
 				links.set(path, child);
 				structure.get(parent).push(child)
 			});
-			data.children.files.forEach(path => {
+			data.children.files.forEach(([ name,path ]) => {
 
 				const child = document.createElement("p");
-				child.innerText = path;
+				child.innerText = name;
 				child.className = "reader-file-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
@@ -74,7 +74,7 @@ function initReader() {
 					console.log(`openning ${path}`)
 				});
 				parent.after(child);
-				links.set(path, child)
+				links.set(path, child);
 				structure.get(parent).push(child)
 			})
 

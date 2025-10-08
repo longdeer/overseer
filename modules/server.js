@@ -27,12 +27,8 @@ class Overseer {
 			descriptions: options.snmp.descriptions
 		};
 		this.announcerView = fsextra.readFileSync("./client/announcer.html");
-		this.announcerJS = fsextra.readFileSync("./client/announcer.js");
 		this.readerView = fsextra.readFileSync("./client/reader.html");
-		this.styles = fsextra.readFileSync("./client/styles.css");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
-		this.upsJS = fsextra.readFileSync("./client/ups.js");
-		this.readerJS = fsextra.readFileSync("./client/reader.js");
 		this.server = new require("http").Server();
 
 
@@ -55,28 +51,28 @@ class Overseer {
 						case "/client/ups.js":
 
 							response.writeHead(200,{ "Content-Type": "text/javascript" });
-							response.write(this.upsJS);
+							response.write(fsextra.readFileSync("./client/ups.js"));
 							break;
 
 
 						case "/client/reader.js":
 
 							response.writeHead(200,{ "Content-Type": "text/javascript" });
-							response.write(this.readerJS);
+							response.write(fsextra.readFileSync("./client/reader.js"));
 							break;
 
 
 						case "/client/announcer.js":
 
 							response.writeHead(200,{ "Content-Type": "text/javascript" });
-							response.write(this.announcerJS);
+							response.write(fsextra.readFileSync("./client/announcer.js"));
 							break;
 
 
 						case "/client/styles.css":
 
 							response.writeHead(200,{ "Content-Type": "text/css" });
-							response.write(this.styles);
+							response.write(fsextra.readFileSync("./client/styles.css"));
 							break;
 
 
