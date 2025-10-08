@@ -21,7 +21,7 @@ function initReader() {
 
 			data.roots.forEach(([ name,path ]) => {
 
-				const root = document.createElement("p");
+				const root = document.createElement("button");
 				root.innerText = name;
 				root.className = "reader-folder-item";
 				root.addEventListener("click",event => {
@@ -45,8 +45,8 @@ function initReader() {
 
 			data.children.folders.forEach(([ name,path ]) => {
 
-				const child = document.createElement("p");
-				child.innerText = name;
+				const child = document.createElement("button");
+				child.innerText = `└ ${name}`;
 				child.className = "reader-folder-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
@@ -65,8 +65,8 @@ function initReader() {
 			});
 			data.children.files.forEach(([ name,path ]) => {
 
-				const child = document.createElement("p");
-				child.innerText = name;
+				const child = document.createElement("button");
+				child.innerText = `└ ${name}`;
 				child.className = "reader-file-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
@@ -85,7 +85,7 @@ function expandCollapse(mapper, target, mode) {
 	mapper.get(target).forEach(item => {
 
 		if(item.style.display === "none" && mode === 1) return;
-		if(item.style.display === "none") item.style.display = "grid";
+		if(item.style.display === "none") item.style.display = "block";
 		else {
 
 			item.style.display = "none";

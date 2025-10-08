@@ -51,19 +51,29 @@ td.view-content-data {
 	padding-bottom: 15px;
 	border-radius: 25px;
 }
+.reader-view {
+	margin-left: 20px;
+	padding-top: 100px;
+}
 .reader-folder-item {
-	display: grid;
-	border: 2px solid black;
+	padding-right: 100px;
+	padding-left: 100px;
+	font: 1.2rem "Fira Sans";
+	display: block;
+	border: none;
 	background-color: white;
 }
 .reader-folder-item:hover {
-	background-color: #E8E7E3;
+	font-size: 2.2rem;
 }
 .reader-file-item {
-	display: grid;
-	border: 2px solid blue;
+	padding-right: 1000px;
+	padding-left: 100px;
+	font: 1.2rem "Fira Sans";
+	display: block;
+	border: none;
 	background-color: white;
 }
 .reader-file-item:hover {
-	background-color: #E8E7E3;
+	font-size: 2.2rem;
 }
