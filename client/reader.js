@@ -16,10 +16,9 @@ function initReader() {
 	ws.addEventListener("message",event => {
 
 		const data = JSON.parse(event.data);
+
 		if(data.roots) {
 
-			console.log(data.roots);
-			const rootList = document.createElement("p");
 			data.roots.forEach(path => {
 
 				const root = document.createElement("p");
@@ -35,11 +34,9 @@ function initReader() {
 						ws.send(JSON.stringify({ parent: event.target.innerText, indent: 1 }))
 					}
 				});
-				rootList.appendChild(root);
-				links.set(path, root)
+				links.set(path, root);
+				reader.appendChild(root)
 			});
-
-			reader.appendChild(rootList)
 
 		}	else if(data.parent && data.children && data.indent) {
 
@@ -96,6 +93,7 @@ function expandCollapse(mapper, target, mode) {
 		}
 	})
 }
+
 
 
 

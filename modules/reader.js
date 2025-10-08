@@ -27,7 +27,7 @@ class Reader {
 		return new Promise((RES,REJ) => {
 
 			readdir(path,{ withFileTypes: true })
-			.then(description => this.getContent(description).then(files => RES(files)).catch(E => REJ(E)))
+			.then(description => this.getContent(description).then(items => RES(items)).catch(E => REJ(E)))
 			.catch(E => REJ(E))
 		})
 	}
