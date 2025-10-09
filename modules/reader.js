@@ -42,15 +42,22 @@ class Reader {
 
 			try {
 
-				const content = { folders: [], files: []};
+				const content = { folders: [], files: [], links: {}};
 				description.forEach(item => {
 
 					for(let prop of Object.getOwnPropertySymbols(item))
-						if(prop.description === "type")
+						if(prop.description === "type") {
 
-							if(item[prop] === 1) content.files.push([ item.name, join(item.path, item.name) ]); else
-							if(item[prop] === 2) content.folders.push([ item.name, join(item.path, item.name) ]); else
-							this.loggy.warn(`Unexpected fs item type ${item[prop]}`)
+							const current = join(item.path, item.name);
+
+							if(item[prop] === 2) content.folders.push([ item.name,current ]); else
+							if(item[prop] === 1) {
+
+								content.files.push([ item.name,current ]);
+								content.links[current] = this.encodePath(current)
+
+							}	else this.loggy.warn(`Unexpected fs item type ${item[prop]}`)
+						}
 				});
 
 				RES(content)

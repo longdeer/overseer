@@ -31,7 +31,9 @@ describe("Reader", function() {
 	it("get content from getDirContent", async function() {
 
 		const items = await reader.getDirContent(content);
-		assert.deepStrictEqual(items,{ files:[[ "LOL","/srv/content/LOL" ]], folders: [[ "KEK","/srv/content/KEK" ]]})
+		assert.deepStrictEqual(items.files,[[ "LOL","/srv/content/LOL" ]]);
+		assert.deepStrictEqual(items.folders,[[ "KEK","/srv/content/KEK" ]]);
+		assert.deepStrictEqual(items.links,{ "/srv/content/LOL": reader.encodePath("/srv/content/LOL") })
 	});
 	// TODO: get some testing folders/files (it works for real)
 	it.skip("get content from getDir", async function() {
