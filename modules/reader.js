@@ -33,11 +33,11 @@ class Reader {
 		return new Promise((RES,REJ) => {
 
 			readdir(path,{ withFileTypes: true })
-			.then(description => this.getContent(description).then(items => RES(items)).catch(E => REJ(E)))
+			.then(description => this.getDirContent(description).then(items => RES(items)).catch(E => REJ(E)))
 			.catch(E => REJ(E))
 		})
 	}
-	getContent(description) {
+	getDirContent(description) {
 		return new Promise((RES,REJ) => {
 
 			try {
@@ -57,6 +57,8 @@ class Reader {
 			}	catch(E) { REJ(E) }
 		})
 	}
+	encodePath = path => Array.prototype.map.call(path,char => char.codePointAt()).join("-");
+	decodePath = link => link.split("-").map(char => String.fromCodePoint(char)).join("");
 }
 
 

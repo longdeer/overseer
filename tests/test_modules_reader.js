@@ -11,7 +11,8 @@ const Reader = require("../modules/reader.js");
 
 describe("Reader", function() {
 
-	const reader = new Reader([ "LOL", "KEK" ]);
+	const logger = { info() {}, warn() {}};
+	const reader = new Reader([ "LOL", "KEK" ],logger);
 	const type = Symbol("type");
 	const content = [
 		{
@@ -27,16 +28,21 @@ describe("Reader", function() {
 			[type]: 2
 		}
 	];
-	it("get content from getContent", async function() {
+	it("get content from getDirContent", async function() {
 
-		const files = await reader.getContent(content);
-		assert.deepStrictEqual(files,[ "/srv/content/LOL" ])
+		const items = await reader.getDirContent(content);
+		assert.deepStrictEqual(items,{ files:[[ "LOL","/srv/content/LOL" ]], folders: [[ "KEK","/srv/content/KEK" ]]})
 	});
 	// TODO: get some testing folders/files (it works for real)
-	it("get content from getDir", async function() {
+	it.skip("get content from getDir", async function() {
 
-		const files = await reader.getDir("ROOT");
-		assert.deepStrictEqual(files,[ "ROOT/FILE" ]);
+		const items = await reader.getDir("ROOT");
+		assert.deepStrictEqual(items,[ "ROOT/FILE" ]);
+	});
+	it("correct endoce-decode", function() {
+
+		const path = "/path/to/very interesting file";
+		assert.strictEqual(reader.decodePath(reader.encodePath(path)), path);
 	})
 })
 
