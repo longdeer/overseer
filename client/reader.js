@@ -69,10 +69,7 @@ function initReader() {
 				child.innerText = `└ ${name}`;
 				child.className = "reader-file-item";
 				child.style.marginLeft = `${indent*30}px`;
-				child.addEventListener("click",event => {
-
-					console.log(`openning ${path}`)
-				});
+				child.addEventListener("click",event => open(`/reader-file-${data.children.links[path]}`));
 				parent.after(child);
 				links.set(path, child);
 				structure.get(parent).push(child)

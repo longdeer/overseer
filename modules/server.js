@@ -28,11 +28,13 @@ class Overseer {
 		};
 		this.announcerView = fsextra.readFileSync("./client/announcer.html");
 		this.readerView = fsextra.readFileSync("./client/reader.html");
+		this.fileView = fsextra.readFileSync("./client/file.html");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
+		this.readerFileLink = /\/reader-file-([\-a-fA-F0-9]+)+/;
 		this.server = new require("http").Server();
 
 
-		this.server.on("request",(message,response) => {
+		this.server.on("request",async (message,response) => {
 
 
 			const requestedURL = message.url;
@@ -113,12 +115,28 @@ class Overseer {
 
 						default:
 
-							this.loggy.warn(`${requestedURL} not found`);
-							response.writeHead(404);
-							break;
+							if(this.readerFileLink.test(requestedURL)) {
+
+								try {
+
+									const data = await this.reader.fileContent(this.reader.decodePath(requestedURL.slice(13)));
+									response.writeHead(200,{ "Content-Type": "text/html" });
+									response.write(`${this.fileView}`.replace("$",data))
+
+								}	catch(E) {
+
+									response.writeHead(500,{ "Content-Type": "text/html" });
+									response.write(`${this.fileView}`.replace("$",E))
+								}
+							}	else {
+
+								this.loggy.warn(`${requestedURL} not found`);
+								response.writeHead(404);
+
+							}	break;
 
 
-					}	break;
+					};	break;
 
 
 				case "POST":
@@ -156,7 +174,7 @@ class Overseer {
 							break;
 
 
-					}	break;
+					};	break;
 
 
 				default:
@@ -166,7 +184,7 @@ class Overseer {
 					break;
 
 
-			}	response.end()
+			};	response.end()
 		});
 
 
@@ -242,8 +260,8 @@ class Overseer {
 							this.reader.getDir(parent)
 							.then(children => webSocket.send(JSON.stringify({ parent, children, indent })))
 							.catch(E => this.loggy.warn(E))
-						})
-						break;
+
+						});	break;
 
 
 					default:

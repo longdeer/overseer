@@ -1,6 +1,7 @@
 const { readdir } = require("fs-extra").promises;
 const { accessSync } = require("fs-extra");
 const { constants } = require("fs-extra");
+const { readFile } = require("fs-extra").promises;
 const { basename } = require("path");
 const { join } = require("path");
 
@@ -62,6 +63,20 @@ class Reader {
 
 				RES(content)
 			}	catch(E) { REJ(E) }
+		})
+	}
+	fileContent(path, callback) {
+
+		this.loggy.info(`Reading file ${path}`);
+		return new Promise(async (RES,REJ) => {
+
+			try {
+
+				const data = await readFile(path,{ encoding: "utf8" });
+				this.loggy.info(`Read ${data.length} symbols`);
+				RES(data)
+
+			}	catch(E) { this.loggy.warn(E) }
 		})
 	}
 	encodePath = path => Array.prototype.map.call(path,char => char.codePointAt()).join("-");
