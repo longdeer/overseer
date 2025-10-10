@@ -13,6 +13,7 @@ function initReader() {
 	const structure = new Map();
 	const links = new Map();
 
+	ws.addEventListener("open",event => heartbit(ws));
 	ws.addEventListener("message",event => {
 
 		const data = JSON.parse(event.data);
@@ -84,7 +85,11 @@ function initView() {
 	const targetSplit = location.href.split("/");
 	const target = targetSplit[targetSplit.length-1].slice(12);
 	const ws = new WebSocket(`ws://${location.host}/reader-file-wscast`);
-	ws.addEventListener("open",event => ws.send(target));
+	ws.addEventListener("open",event => {
+
+		ws.send(target);
+		heartbit(ws)
+	});
 	ws.addEventListener("message",event => view.innerText += event.data);
 }
 function expandCollapse(mapper, target, mode) {
@@ -98,6 +103,22 @@ function expandCollapse(mapper, target, mode) {
 			if(mapper.has(item)) expandCollapse(mapper, item, 1)
 		}
 	})
+}
+function heartbit(socket, timeout) {
+
+	/*
+	 *	Makes websocket "socket" ping to server
+	 *	to asure connection will be kept alive.
+	 *	By default "timeout" timer is 3600000
+	 *	(one hour).
+	 */
+
+	setTimeout(() => {
+
+		socket.send("heartbit");
+		heartbit(socket, timeout)
+
+	},	timeout || 3600000)
 }
 
 

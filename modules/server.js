@@ -240,7 +240,13 @@ class Overseer {
 							this.loggy.info(`Opened announcer websocket for ${remoteAddress} (${uuid})`);
 							this.announcerClients[uuid] = webSocket
 
-						});	break;
+						});
+						webSocket.on("message",event => {
+
+							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
+							else this.loggy.warn(`Unexpected message from ${remoteAddress} (${uuid}): ${event.data}`)
+						})
+						break;
 
 
 					case "/reader-wscast":
@@ -254,13 +260,17 @@ class Overseer {
 							webSocket.send(JSON.stringify({ roots: this.reader.roots }))
 
 						});
-						webSocket.on("message",event => {
+						webSocket.on("message",async event => {
 
-							const { parent,indent } = JSON.parse(event.data);
-							this.loggy.info(`websocket request of ${parent} from ${remoteAddress} (${uuid})`);
-							this.reader.getDir(parent)
-							.then(children => webSocket.send(JSON.stringify({ parent, children, indent })))
-							.catch(E => this.loggy.warn(E))
+							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
+							else try {
+
+								const { parent,indent } = JSON.parse(event.data);
+								this.loggy.info(`websocket request of ${parent} from ${remoteAddress} (${uuid})`);
+								const children = await this.reader.getDir(parent);
+								webSocket.send(JSON.stringify({ parent, children, indent }))
+
+							}	catch(E) { this.loggy.warn(E) }
 
 						});	break;
 
@@ -272,10 +282,13 @@ class Overseer {
 						webSocket.on("open",() => this.loggy.info(`Opened reader-file websocket for ${remoteAddress} (${uuid})`));
 						webSocket.on("message",event => {
 
-							const path = this.reader.decodePath(event.data);
-							this.loggy.info(`websocket watch request for ${path} from ${remoteAddress} (${uuid})`);
-							this.reader.fileWatch(path,line => webSocket.send(`${line}\n`))
+							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
+							else {
 
+								const path = this.reader.decodePath(event.data);
+								this.loggy.info(`websocket watch request for ${path} from ${remoteAddress} (${uuid})`);
+								this.reader.fileWatch(path,line => webSocket.send(`${line}\n`))
+							}
 						});	break;
 
 

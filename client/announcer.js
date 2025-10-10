@@ -30,7 +30,9 @@ function initAnnouncer() {
 	.catch(E => console.error(E));
 
 
-	new WebSocket(`ws://${location.host}/announcer-wscast`).onmessage = event => {
+	const ws = new WebSocket(`ws://${location.host}/announcer-wscast`)
+	ws.addEventListener("open",event => heartbit(ws));
+	ws.addEventListener("message",event => {
 
 		messageBlock = document.createElement("pre");
 		messageBlock.className = "announcer-message";
@@ -46,7 +48,23 @@ function initAnnouncer() {
 
 		announcer.appendChild(messageBlock);
 		announcer.scrollIntoView(false)
-	}
+	})
+}
+function heartbit(socket, timeout) {
+
+	/*
+	 *	Makes websocket "socket" ping to server
+	 *	to asure connection will be kept alive.
+	 *	By default "timeout" timer is 3600000
+	 *	(one hour).
+	 */
+
+	setTimeout(() => {
+
+		socket.send("heartbit");
+		heartbit(socket, timeout)
+
+	},	timeout || 3600000)
 }
 
 
