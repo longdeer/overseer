@@ -32,7 +32,7 @@ describe("server", function() {
 
 			request(new server(options, logger).server)
 			.get("/client/ups.js")
-			.expect("Content-Type", "text/js")
+			.expect("Content-Type", "text/javascript")
 			.expect(200)
 			.end((err,res) => {
 
@@ -44,11 +44,11 @@ describe("server", function() {
 				return done()
 			})
 		});
-		it("GET /client/announcer.js", function(done) {
+		it("GET /client/reader.js", function(done) {
 
 			request(new server(options, logger).server)
-			.get("/client/announcer.js")
-			.expect("Content-Type", "text/js")
+			.get("/client/reader.js")
+			.expect("Content-Type", "text/javascript")
 			.expect(200)
 			.end((err,res) => {
 
@@ -56,6 +56,38 @@ describe("server", function() {
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
 				assert.strictEqual(logger.info.mock.callCount(),2);
+
+				return done()
+			})
+		});
+		it("GET /client/announcer.js", function(done) {
+
+			request(new server(options, logger).server)
+			.get("/client/announcer.js")
+			.expect("Content-Type", "text/javascript")
+			.expect(200)
+			.end((err,res) => {
+
+				if(err) return done(err);
+
+				assert.strictEqual(logger.warn.mock.callCount(),0);
+				assert.strictEqual(logger.info.mock.callCount(),3);
+
+				return done()
+			})
+		});
+		it("GET /client/tools.js", function(done) {
+
+			request(new server(options, logger).server)
+			.get("/client/tools.js")
+			.expect("Content-Type", "text/javascript")
+			.expect(200)
+			.end((err,res) => {
+
+				if(err) return done(err);
+
+				assert.strictEqual(logger.warn.mock.callCount(),0);
+				assert.strictEqual(logger.info.mock.callCount(),4);
 
 				return done()
 			})
@@ -71,7 +103,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
-				assert.strictEqual(logger.info.mock.callCount(),3);
+				assert.strictEqual(logger.info.mock.callCount(),5);
 
 				return done()
 			})
@@ -87,7 +119,23 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
-				assert.strictEqual(logger.info.mock.callCount(),4);
+				assert.strictEqual(logger.info.mock.callCount(),6);
+
+				return done()
+			})
+		});
+		it("GET /reader", function(done) {
+
+			request(new server(options, logger).server)
+			.get("/reader")
+			.expect("Content-Type", "text/html")
+			.expect(200)
+			.end((err,res) => {
+
+				if(err) return done(err);
+
+				assert.strictEqual(logger.warn.mock.callCount(),0);
+				assert.strictEqual(logger.info.mock.callCount(),7);
 
 				return done()
 			})
@@ -103,7 +151,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
-				assert.strictEqual(logger.info.mock.callCount(),5);
+				assert.strictEqual(logger.info.mock.callCount(),8);
 
 				return done()
 			})
@@ -119,7 +167,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
-				assert.strictEqual(logger.info.mock.callCount(),6);
+				assert.strictEqual(logger.info.mock.callCount(),9);
 
 				return done()
 			})
@@ -135,7 +183,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),0);
-				assert.strictEqual(logger.info.mock.callCount(),7);
+				assert.strictEqual(logger.info.mock.callCount(),10);
 
 				return done()
 			})
@@ -150,7 +198,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),1);
-				assert.strictEqual(logger.info.mock.callCount(),8);
+				assert.strictEqual(logger.info.mock.callCount(),11);
 
 				return done()
 			})
@@ -170,7 +218,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),1);
-				assert.strictEqual(logger.info.mock.callCount(),10);
+				assert.strictEqual(logger.info.mock.callCount(),13);
 				assert.strictEqual(session.announcerHistory.length, 1);
 
 				return done()
@@ -187,7 +235,7 @@ describe("server", function() {
 				if(err) return done(err);
 
 				assert.strictEqual(logger.warn.mock.callCount(),2);
-				assert.strictEqual(logger.info.mock.callCount(),11);
+				assert.strictEqual(logger.info.mock.callCount(),14);
 
 				return done()
 			})

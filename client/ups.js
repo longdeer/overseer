@@ -75,7 +75,7 @@ function upsView() {
 			})
 
 			const ws = new WebSocket(`ws://${location.host}/ups-monitor-wscast`);
-			ws.onmessage = event => {
+			ws.addEventListener("message",event => {
 
 				const message = JSON.parse(event.data);
 				Object.keys(message).forEach(ip => {
@@ -97,8 +97,7 @@ function upsView() {
 						})
 					}	else	views[name].style.backgroundColor = "yellow"
 				})
-			}
-			setTimeout(() => Object.keys(updates).forEach(name => markDead(name, updates, views, timer)), timer)
+			});	setTimeout(() => Object.keys(updates).forEach(name => markDead(name, updates, views, timer)), timer)
 		})
 	})
 	.catch(E => console.error(E))

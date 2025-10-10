@@ -1,3 +1,4 @@
+import { heartbit } from "./tools.js";
 
 
 
@@ -6,7 +7,7 @@
 
 
 
-function initReader() {
+window.initReader = function() {
 
 	const reader = document.getElementsByClassName("reader-view")[0];
 	const ws = new WebSocket(`ws://${location.host}/reader-wscast`);
@@ -79,7 +80,7 @@ function initReader() {
 		}	else console.error("Improper data")
 	})
 }
-function initView() {
+window.initView = function() {
 
 	const view = document.getElementsByClassName("file-view")[0];
 	const targetSplit = location.href.split("/");
@@ -103,22 +104,6 @@ function expandCollapse(mapper, target, mode) {
 			if(mapper.has(item)) expandCollapse(mapper, item, 1)
 		}
 	})
-}
-function heartbit(socket, timeout) {
-
-	/*
-	 *	Makes websocket "socket" ping to server
-	 *	to asure connection will be kept alive.
-	 *	By default "timeout" timer is 3600000
-	 *	(one hour).
-	 */
-
-	setTimeout(() => {
-
-		socket.send("heartbit");
-		heartbit(socket, timeout)
-
-	},	timeout || 3600000)
 }
 
 

@@ -71,6 +71,13 @@ class Overseer {
 							break;
 
 
+						case "/client/tools.js":
+
+							response.writeHead(200,{ "Content-Type": "text/javascript" });
+							response.write(fsextra.readFileSync("./client/tools.js"));
+							break;
+
+
 						case "/client/styles.css":
 
 							response.writeHead(200,{ "Content-Type": "text/css" });
