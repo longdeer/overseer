@@ -2,6 +2,10 @@ const { readdir } = require("fs-extra").promises;
 const { accessSync } = require("fs-extra");
 const { constants } = require("fs-extra");
 const { readFile } = require("fs-extra").promises;
+const { statSync } = require("fs-extra");
+const { watchFile } = require("fs-extra");
+const { createReadStream } = require("fs-extra");
+const { createInterface } = require("readline");
 const { basename } = require("path");
 const { join } = require("path");
 
@@ -65,9 +69,10 @@ class Reader {
 			}	catch(E) { REJ(E) }
 		})
 	}
-	fileContent(path, callback) {
+	fileContent(path) {
 
 		this.loggy.info(`Reading file ${path}`);
+
 		return new Promise(async (RES,REJ) => {
 
 			try {
@@ -78,6 +83,29 @@ class Reader {
 
 			}	catch(E) { this.loggy.warn(E) }
 		})
+	}
+	fileWatch(path, callback) {
+
+		this.loggy.info(`Watching file ${path}`);
+
+		const logger = this.loggy;
+		let   fsize = statSync(path).size;
+		let   readableStream;
+		let   lineReader;
+
+		watchFile(path,{ interval: 1000 },(cs,ps) => {
+
+			if(fsize <cs.size) {
+
+				readableStream = createReadStream(path,{ start: fsize, encoding: "utf8" });
+				lineReader = createInterface({ input: readableStream, crlfDelay: Infinity });
+
+				lineReader.on("line",callback);
+				lineReader.on("close",() => fsize = cs.size);
+				readableStream.on("error",logger.warn);
+			}
+		})
+
 	}
 	encodePath = path => Array.prototype.map.call(path,char => char.codePointAt()).join("-");
 	decodePath = link => link.split("-").map(char => String.fromCodePoint(char)).join("");

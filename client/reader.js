@@ -78,6 +78,15 @@ function initReader() {
 		}	else console.error("Improper data")
 	})
 }
+function initView() {
+
+	const view = document.getElementsByClassName("file-view")[0];
+	const targetSplit = location.href.split("/");
+	const target = targetSplit[targetSplit.length-1].slice(12);
+	const ws = new WebSocket(`ws://${location.host}/reader-file-wscast`);
+	ws.addEventListener("open",event => ws.send(target));
+	ws.addEventListener("message",event => view.innerText += event.data);
+}
 function expandCollapse(mapper, target, mode) {
 	mapper.get(target).forEach(item => {
 

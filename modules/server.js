@@ -119,9 +119,10 @@ class Overseer {
 
 								try {
 
-									const data = await this.reader.fileContent(this.reader.decodePath(requestedURL.slice(13)));
+									const path = this.reader.decodePath(requestedURL.slice(13));
+									const data = await this.reader.fileContent(path);
 									response.writeHead(200,{ "Content-Type": "text/html" });
-									response.write(`${this.fileView}`.replace("$",data))
+									response.write(`${this.fileView}`.replace("$content",data))
 
 								}	catch(E) {
 
@@ -260,6 +261,20 @@ class Overseer {
 							this.reader.getDir(parent)
 							.then(children => webSocket.send(JSON.stringify({ parent, children, indent })))
 							.catch(E => this.loggy.warn(E))
+
+						});	break;
+
+
+					case "/reader-file-wscast":
+
+						webSocket = new ws(req,sock,head);
+						webSocket.on("close",() => this.loggy.info(`Closed reader-file websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("open",() => this.loggy.info(`Opened reader-file websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("message",event => {
+
+							const path = this.reader.decodePath(event.data);
+							this.loggy.info(`websocket watch request for ${path} from ${remoteAddress} (${uuid})`);
+							this.reader.fileWatch(path,line => webSocket.send(`${line}\n`))
 
 						});	break;
 

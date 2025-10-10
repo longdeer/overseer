@@ -77,3 +77,6 @@ td.view-content-data {
 .reader-file-item:hover {
 	font-size: 2.2rem;
 }
+.file-view {
+	margin-left: 10px;
+}
