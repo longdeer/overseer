@@ -23,6 +23,7 @@ overseer
 	- The status of the UPS batteries;<br>
 	- The reason for the occurrence of the last transfer to UPS battery pow.<br>
 * ``announcer`` layout
+* ``reader`` file live view
 
 installation
 ------------
