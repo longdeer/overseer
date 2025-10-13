@@ -28,6 +28,7 @@ class Overseer {
 		};
 		this.announcerView = fsextra.readFileSync("./client/announcer.html");
 		this.readerView = fsextra.readFileSync("./client/reader.html");
+		this.indexPage = fsextra.readFileSync("./client/index.html");
 		this.fileView = fsextra.readFileSync("./client/file.html");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
 		this.readerFileLink = /\/reader-file-([\-a-fA-F0-9]+)+/;
@@ -82,6 +83,13 @@ class Overseer {
 
 							response.writeHead(200,{ "Content-Type": "text/css" });
 							response.write(fsextra.readFileSync("./client/styles.css"));
+							break;
+
+
+						case "/":
+
+							response.writeHead(200,{ "Content-Type": "text/html" });
+							response.write(this.indexPage);
 							break;
 
 

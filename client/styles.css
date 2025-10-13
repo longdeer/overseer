@@ -80,3 +80,14 @@ td.view-content-data {
 .file-view {
 	margin-left: 10px;
 }
+.index-page {
+	padding-top: 50px;
+	display: inline-grid;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+	width: 100%;
+}
+.index-page-menu {
+	margin-top: 5px;
+}
