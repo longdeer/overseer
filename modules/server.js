@@ -30,6 +30,7 @@ class Overseer {
 		this.readerView = fsextra.readFileSync("./client/reader.html");
 		this.indexPage = fsextra.readFileSync("./client/index.html");
 		this.fileView = fsextra.readFileSync("./client/file.html");
+		this.chatView = fsextra.readFileSync("./client/chat.html");
 		this.upsView = fsextra.readFileSync("./client/ups.html");
 		this.readerFileLink = /\/reader-file-([\-a-fA-F0-9]+)+/;
 		this.server = new require("http").Server();
@@ -72,6 +73,13 @@ class Overseer {
 							break;
 
 
+						case "/client/chat.js":
+
+							response.writeHead(200,{ "Content-Type": "text/javascript" });
+							response.write(fsextra.readFileSync("./client/chat.js"));
+							break;
+
+
 						case "/client/tools.js":
 
 							response.writeHead(200,{ "Content-Type": "text/javascript" });
@@ -111,6 +119,13 @@ class Overseer {
 
 							response.writeHead(200,{ "Content-Type": "text/html" });
 							response.write(this.announcerView);
+							break;
+
+
+						case "/chat":
+
+							response.writeHead(200,{ "Content-Type": "text/html" });
+							response.write(this.chatView);
 							break;
 
 
@@ -260,6 +275,24 @@ class Overseer {
 
 							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
 							else this.loggy.warn(`Unexpected message from ${remoteAddress} (${uuid}): ${event.data}`)
+						})
+						break;
+
+
+					case "/chat-wscast":
+
+						webSocket = new ws(req,sock,head);
+						webSocket.on("close",() => this.loggy.info(`Closed chat websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("open",() => this.loggy.info(`Opened chat websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("message",event => {
+
+							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
+							else {
+
+								const userMessage = event.data;
+								this.loggy.info(`Broadcasting ${userMessage.length} symbols from ${remoteAddress} (${uuid})`);
+								webSocket.send(JSON.stringify({ user: remoteAddress, userMessage }))
+							}
 						})
 						break;
 

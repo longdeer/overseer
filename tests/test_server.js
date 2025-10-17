@@ -239,7 +239,7 @@ describe("server", function() {
 
 				return done()
 			})
-		})
+		});
 		it("POST non-existent page", function(done) {
 
 			request(new server(options, logger).server)
