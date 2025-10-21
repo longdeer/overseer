@@ -110,6 +110,7 @@ class XPPC {
 			 * the buffer state will be wiped for target,
 			 * so the frontend will be awared.
 			 */
+
 			if(error) {
 
 				this.loggy.warn(`${target} polling error: ${error}`);
@@ -143,6 +144,7 @@ class XPPC {
 			 * the buffer state will be wiped for target,
 			 * so the frontend will be awared.
 			 */
+
 			if(error) {
 
 				this.loggy.warn(`${target} polling error: ${error}`);

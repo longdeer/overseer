@@ -14,6 +14,8 @@ class Overseer {
 
 
 		this.loggy = loggy;
+		this.chatClients = {};
+		this.chatHistory = [];
 		this.announcerClients = {};
 		this.announcerHistory = [];
 		this.reader = options.reader;
@@ -189,7 +191,7 @@ class Overseer {
 									announce = data.message;
 									this.loggy.info(`Received ${announce.length} symbols from ${remoteAddress}`);
 
-									announce = `---- ${new Date()}\n${announce}`;
+									announce = `---- ${new Date()}\n\n${announce}`;
 									this.announcerHistory.push(announce);
 									if(100 <this.announcerHistory.length) this.announcerHistory.shift();
 
@@ -282,16 +284,29 @@ class Overseer {
 					case "/chat-wscast":
 
 						webSocket = new ws(req,sock,head);
-						webSocket.on("close",() => this.loggy.info(`Closed chat websocket for ${remoteAddress} (${uuid})`));
-						webSocket.on("open",() => this.loggy.info(`Opened chat websocket for ${remoteAddress} (${uuid})`));
+						webSocket.on("close",() => {
+
+							this.loggy.info(`Closed chat websocket for ${remoteAddress} (${uuid})`);
+							delete this.chatClients[uuid]
+						});
+						webSocket.on("open",() => {
+
+							this.loggy.info(`Opened chat websocket for ${remoteAddress} (${uuid})`);
+							this.chatHistory.forEach(message => webSocket.send(message));
+							this.chatClients[uuid] = webSocket
+						});
 						webSocket.on("message",event => {
 
 							if(event.data === "heartbit") this.loggy.info(`heartbit from ${remoteAddress} (${uuid})`);
 							else {
 
 								const userMessage = event.data;
+								const messageRepr = `${new Date().toLocaleString()} from ${remoteAddress}: ${userMessage}`;
+
+								this.chatHistory.push(messageRepr);
 								this.loggy.info(`Broadcasting ${userMessage.length} symbols from ${remoteAddress} (${uuid})`);
-								webSocket.send(JSON.stringify({ user: remoteAddress, userMessage }))
+
+								Object.values(this.chatClients).forEach(connection => connection.send(messageRepr))
 							}
 						})
 						break;
