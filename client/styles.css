@@ -1,9 +1,21 @@
-.monitor {
+html,body {
+	height: 100%;
+	margin: 0;
+	color :#101c13;
+}
+main {
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	height: 95%;
+	background-color: #2a2950;
+}
+#monitor {
 	display: inline-grid;
 	justify-content: center;
 	align-items: center;
 	padding: 10px;
-	width: 100%;
+	width: 75%;
 }
 .monitor-view {
 	display: inline-block;
@@ -33,14 +45,21 @@ td.view-content-data {
 	align-items: center;
 	width: 100%;
 }
-.announcer {
+/*.announcer {
 	width: 100%;
-}
-.announcer-view {
-	margin: 10px auto;
-	border: 2px solid black;
+}*/
+#announcer-view {
+	/*margin: 10px auto;*/
+	/*border: 2px solid black;*/
+	height: 100%;
 	width: 70ch;
-	padding: 5px 10px 5px 10px;
+	/*padding: 5px 10px 5px 10px;*/
+	padding-left: 10px;
+	padding-right: 10px;
+	/*height: 90%;*/
+	overflow: auto;
+	background-color: #554684;
+	scrollbar-color: #554684 #2a2950;
 }
 .announcer-message {
 	border: 2px solid black;
@@ -50,6 +69,7 @@ td.view-content-data {
 	padding-top: 15px;
 	padding-bottom: 15px;
 	border-radius: 25px;
+	background-color: #ebf9fe;
 }
 .reader-view {
 	margin-left: 20px;
@@ -80,14 +100,51 @@ td.view-content-data {
 .file-view {
 	margin-left: 10px;
 }
-.index-page {
-	padding-top: 50px;
+#index-page {
+	/*padding-top: 50px;*/
 	display: inline-grid;
 	justify-content: center;
 	text-align: center;
 	align-items: center;
-	width: 100%;
+	width: 75%;
+	height: 100%;
+	/*height: 300px;*/
+	/*top: 25px;*/
+	/*bottom: 0px;*/
+	background-color: #554684;
 }
 .index-page-menu {
 	margin-top: 5px;
+}
+header {
+	background-color: #2a2950;
+	height: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+header a {
+	font: bold 5em "Dancing Script";
+	color: #554684;
+	text-shadow: #101C13 2px 2px 0.2rem;
+}
+header a:link {
+	color: #554684;
+	text-decoration: none;
+	text-shadow: #101C13 2px 2px 0.2rem;
+}
+header a:visited {
+	color: #554684;
+	text-decoration: none;
+	text-shadow: #101C13 2px 2px 0.2rem;
+}
+header a:active {
+	color: #554684;
+	text-decoration: none;
+	text-shadow: #101C13 2px 2px 0.2rem;
+}
+header a:hover {
+	color: #554684;
+	text-decoration: none;
+	text-shadow: none;
 }

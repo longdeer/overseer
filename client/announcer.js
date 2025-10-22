@@ -10,7 +10,7 @@ import { fader } from "./tools.js";
 
 window.initAnnouncer = function() {
 
-	const announcer = document.getElementsByClassName("announcer-view")[0];
+	const announcer = document.getElementById("announcer-view");
 	let   messageBlock;
 
 
@@ -26,7 +26,8 @@ window.initAnnouncer = function() {
 				messageBlock.className = "announcer-message";
 				messageBlock.innerText = message;
 				announcer.appendChild(messageBlock)
-			});	announcer.scrollIntoView(false);//window.scrollTo(0, document.body.scrollHeight)
+			// });	announcer.scrollIntoView(false);
+			});	announcer.scrollTo(0, announcer.scrollHeight)
 		})
 	})
 	.catch(E => console.error(E));
@@ -43,7 +44,8 @@ window.initAnnouncer = function() {
 		fader(216, 216, 216, messageBlock);
 
 		announcer.appendChild(messageBlock);
-		announcer.scrollIntoView(false)
+		// announcer.scrollIntoView(false)
+		announcer.scrollTo(0, announcer.scrollHeight)
 	})
 }
 

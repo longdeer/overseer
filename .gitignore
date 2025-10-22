@@ -3,6 +3,7 @@ __pycache__
 *.sublime-workspace
 *.service
 *.loggy
+*.png
 bin
 lib
 lib64

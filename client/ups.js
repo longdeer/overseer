@@ -8,7 +8,7 @@
 
 function upsView() {
 
-	const monitor = document.getElementsByClassName("monitor")[0];
+	const monitor = document.getElementById("monitor");
 
 	fetch("/ups-monitor-setup")
 	.then(response => {
