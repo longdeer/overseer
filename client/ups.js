@@ -86,7 +86,7 @@ function upsView() {
 
 					if(stat.length) {
 
-						views[name].style.backgroundColor = "white";
+						views[name].style.backgroundColor = "#ebf9fe";
 						updates[name] = new Date();
 						stat.forEach(unit => {
 

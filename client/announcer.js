@@ -26,7 +26,6 @@ window.initAnnouncer = function() {
 				messageBlock.className = "announcer-message";
 				messageBlock.innerText = message;
 				announcer.appendChild(messageBlock)
-			// });	announcer.scrollIntoView(false);
 			});	announcer.scrollTo(0, announcer.scrollHeight)
 		})
 	})
@@ -41,10 +40,10 @@ window.initAnnouncer = function() {
 		messageBlock.className = "announcer-message";
 		messageBlock.innerText = event.data;
 
-		fader(216, 216, 216, messageBlock);
+		// TODO: enhance fader
+		// fader(216, 216, 216, messageBlock);
 
 		announcer.appendChild(messageBlock);
-		// announcer.scrollIntoView(false)
 		announcer.scrollTo(0, announcer.scrollHeight)
 	})
 }

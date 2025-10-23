@@ -9,7 +9,7 @@ import { heartbit } from "./tools.js";
 
 window.initReader = function() {
 
-	const reader = document.getElementsByClassName("reader-view")[0];
+	const reader = document.getElementById("reader-view");
 	const ws = new WebSocket(`ws://${location.host}/reader-wscast`);
 	const structure = new Map();
 	const links = new Map();
@@ -25,7 +25,7 @@ window.initReader = function() {
 
 				const root = document.createElement("button");
 				root.innerText = name;
-				root.className = "reader-folder-item";
+				root.className = "button-item";
 				root.addEventListener("click",event => {
 
 					event.preventDefault();
@@ -48,8 +48,8 @@ window.initReader = function() {
 			data.children.folders.forEach(([ name,path ]) => {
 
 				const child = document.createElement("button");
-				child.innerText = `└ ${name}`;
-				child.className = "reader-folder-item";
+				child.innerText = `${name}`;
+				child.className = "button-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => {
 
@@ -68,7 +68,7 @@ window.initReader = function() {
 			data.children.files.forEach(([ name,path ]) => {
 
 				const child = document.createElement("button");
-				child.innerText = `└ ${name}`;
+				child.innerText = `${name}`;
 				child.className = "reader-file-item";
 				child.style.marginLeft = `${indent*30}px`;
 				child.addEventListener("click",event => open(`/reader-file-${data.children.links[path]}`));
