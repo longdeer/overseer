@@ -2,7 +2,7 @@
 
 overseer
 ========
-``node`` app for monitoring and controlling. Current version includes:
+`node` app for monitoring and controlling. Current version includes:
 * UPS parameters monitor:
 	- The UPS model name (e.g. 'Intelligent 8000E 900VA');<br>
 	- The current AC input phase;<br>
@@ -22,12 +22,15 @@ overseer
 	- The elapsed time in seconds since the UPS has switched to battery power;<br>
 	- The status of the UPS batteries;<br>
 	- The reason for the occurrence of the last transfer to UPS battery pow.<br>
-* ``announcer`` layout
-* ``reader`` file live view
+* `announcer` - special `POST` endpoint can receive text messages to translate it on this page;
+* `reader` - supply `READER_PATHS` variable in `.env` to allow for scanning and expolring text files;
+* `chat` page for conversation with no history storing.
 
 installation
 ------------
-``git clone https://github.com/longdeer/overseer.git``
+```
+git clone https://github.com/longdeer/overseer.git
+```
 
 configuration
 -------------
@@ -44,4 +47,5 @@ UPS_SNMP_POLL_NAMES=
 UPS_SNMP_POLL_TIMER=
 SNMP_COMMUNITY=
 SNMP_PORT=
+READER_PATHS=
 ```
