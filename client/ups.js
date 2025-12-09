@@ -88,14 +88,8 @@ function upsView() {
 
 						views[name].style.backgroundColor = "#ebf9fe";
 						updates[name] = new Date();
-						stat.forEach(unit => {
-
-							stats[name][unit].innerText = data[unit];
-							if(unit === "upsSmartBatteryRunTimeRemaining" && data[unit] !== "-")
-
-								views[name].style.backgroundColor = "red"
-						})
-					}	else	views[name].style.backgroundColor = "yellow"
+						stat.forEach(unit => stats[name][unit].innerText = data[unit])
+					}	else views[name].style.backgroundColor = "yellow"
 				})
 			});	setTimeout(() => Object.keys(updates).forEach(name => markDead(name, updates, views, timer)), timer)
 		})

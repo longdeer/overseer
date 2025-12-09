@@ -6,87 +6,13 @@
 
 
 
-class XPPC {
+class UpsMibHandler {
+
 	constructor(logger) {
 
 		this.snmp = require("net-snmp");
 		this.loggy = logger;
 		this.pollBuffer = {}
-	}
-	upsBaseIdentModel					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.1.1.1.0" :	`${V}`;
-	upsBaseInputPhase					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.1.1.0" :	`${V}`;
-	upsBaseOutputStatus					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.1.1.0" :	`${V}`;
-	upsBaseOutputPhase					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.1.2.0" :	`${V}`;
-	upsSmartOutputLoad					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.3.0" :	`${V} %`;
-	upsSmartBatteryCapacity				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.1.0" :	`${V} %`;
-	upsSmartBatteryVoltage				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.2.0" :	`${V *10} V`;
-	upsSmartInputLineVoltage			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.1.0" :	`${V /10} V`;
-	upsSmartBatteryFullChargeVoltage	= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.6.0" :	`${V /10} V`;
-	upsSmartInputMaxLineVoltage			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.2.0" :	`${V /10} V`;
-	upsSmartInputMinLineVoltage			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.3.0" :	`${V /10} V`;
-	upsSmartOutputVoltage				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.1.0" :	`${V /10} V`;
-	upsSmartOutputFrequency				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.2.0" :	`${V /10} Hz`;
-	upsSmartInputFrequency				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.4.0" :	`${V /10} Hz`;
-	upsSmartBatteryTemperature			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.3.0" :	`${V /10} °C`;
-	upsSmartBatteryReplaceIndicator		= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.5.0" :	V === 0 ? "-" : "+";
-	upsSmartBatteryCurrent				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.7.0" :	0 <V ? `${V} %` : "-";
-	upsSmartBatteryRunTimeRemaining		= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.4.0" :	0 <V ? `${V} sec` : "-";
-	upsBaseBatteryTimeOnBattery			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.2.0" :	0 <V ? `${V} sec` : "-";
-	upsBaseBatteryStatus				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.1.0" :	V === 0 ? "excelent" : V === 1 ? "good" : V === 2 ? "normal" : V === 3 ? "low" : `undefined(${V})`;
-	upsSmartInputLineFailCause			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.5.0" :	V === 1 ? "no transfer yet" :
-																									V === 2 ? "transfer to battery is caused by an over voltage greater than the high transfer voltage" :
-																									V === 3 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
-																									V === 4 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
-																									V === 5 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
-																									V === 6 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
-																									`undefined(${V})`;
-	oidMapper = {
-
-		"1.3.6.1.4.1.935.1.1.1.1.1.1.0":	"upsBaseIdentModel",
-		"1.3.6.1.4.1.935.1.1.1.3.1.1.0":	"upsBaseInputPhase",
-		"1.3.6.1.4.1.935.1.1.1.4.1.1.0":	"upsBaseOutputStatus",
-		"1.3.6.1.4.1.935.1.1.1.4.1.2.0":	"upsBaseOutputPhase",
-		"1.3.6.1.4.1.935.1.1.1.4.2.3.0":	"upsSmartOutputLoad",
-		"1.3.6.1.4.1.935.1.1.1.2.2.1.0":	"upsSmartBatteryCapacity",
-		"1.3.6.1.4.1.935.1.1.1.2.2.2.0":	"upsSmartBatteryVoltage",
-		"1.3.6.1.4.1.935.1.1.1.3.2.1.0":	"upsSmartInputLineVoltage",
-		"1.3.6.1.4.1.935.1.1.1.2.2.6.0":	"upsSmartBatteryFullChargeVoltage",
-		"1.3.6.1.4.1.935.1.1.1.3.2.2.0":	"upsSmartInputMaxLineVoltage",
-		"1.3.6.1.4.1.935.1.1.1.3.2.3.0":	"upsSmartInputMinLineVoltage",
-		"1.3.6.1.4.1.935.1.1.1.4.2.1.0":	"upsSmartOutputVoltage",
-		"1.3.6.1.4.1.935.1.1.1.4.2.2.0":	"upsSmartOutputFrequency",
-		"1.3.6.1.4.1.935.1.1.1.3.2.4.0":	"upsSmartInputFrequency",
-		"1.3.6.1.4.1.935.1.1.1.2.2.3.0":	"upsSmartBatteryTemperature",
-		"1.3.6.1.4.1.935.1.1.1.2.2.5.0":	"upsSmartBatteryReplaceIndicator",
-		"1.3.6.1.4.1.935.1.1.1.2.2.7.0":	"upsSmartBatteryCurrent",
-		"1.3.6.1.4.1.935.1.1.1.2.2.4.0":	"upsSmartBatteryRunTimeRemaining",
-		"1.3.6.1.4.1.935.1.1.1.2.1.2.0":	"upsBaseBatteryTimeOnBattery",
-		"1.3.6.1.4.1.935.1.1.1.2.1.1.0":	"upsBaseBatteryStatus",
-		"1.3.6.1.4.1.935.1.1.1.3.2.5.0":	"upsSmartInputLineFailCause",
-	}
-	oidDescription = {
-
-		upsBaseIdentModel:					"The UPS model name (e.g. 'Intelligent 8000E 900VA').",
-		upsBaseInputPhase:					"The current AC input phase.",
-		upsBaseOutputStatus:				"The current state of the UPS. If the UPS is unable to determine the state of the UPS this variable is set to unknown(1).",
-		upsBaseOutputPhase:					"The current output phase.",
-		upsSmartOutputLoad:					"The current UPS load expressed in percent of rated capacity.",
-		upsSmartBatteryCapacity:			"The remaining battery capacity expressed in percent of full capacity.",
-		upsSmartBatteryVoltage:				"The current battery voltage expressed in 1/10 VDC.",
-		upsSmartInputLineVoltage:			"The current utility line voltage in 1/10 VAC.",
-		upsSmartBatteryFullChargeVoltage:	"The fully charged battery voltage of the battery system used in the UPS, expressed in tenths of a volt.",
-		upsSmartInputMaxLineVoltage:		"The maximum utility line voltage in 1/10 VAC over the previous 1 minute period.",
-		upsSmartInputMinLineVoltage:		"The minimum utility line voltage in 1/10 VAC over the previous 1 minute period.",
-		upsSmartOutputVoltage:				"The output voltage of the UPS system in 1/10 VAC.",
-		upsSmartOutputFrequency:			"The current output frequency of the UPS system in 1/10 Hz.",
-		upsSmartInputFrequency:				"The current input frequency to the UPS system in 1/10 Hz.",
-		upsSmartBatteryTemperature:			"The current internal UPS temperature expressed in tenths of a Celsius degree.",
-		upsSmartBatteryReplaceIndicator:	"Indicates whether the UPS batteries need replacing.",
-		upsSmartBatteryCurrent:				"The current battery current expressed in percent of maximum current.",
-		upsSmartBatteryRunTimeRemaining:	"The UPS battery run time remaining before battery exhaustion, in seconds.",
-		upsBaseBatteryTimeOnBattery:		"The elapsed time in seconds since the UPS has switched to battery power.",
-		upsBaseBatteryStatus:				"The status of the UPS batteries.",
-		upsSmartInputLineFailCause:			"The reason for the occurrence of the last transfer to UPS battery power.",
 	}
 	clearBuffer(target) {
 
@@ -271,7 +197,162 @@ class XPPC {
 
 
 
+class XPPC extends UpsMibHandler {
+
+	upsBaseIdentModel						= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.1.1.1.0" :	`${V}`;
+	upsBaseInputPhase						= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.1.1.0" :	`${V}`;
+	upsBaseOutputStatus						= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.1.1.0" :	`${V}`;
+	upsBaseOutputPhase						= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.1.2.0" :	`${V}`;
+	upsSmartOutputLoad						= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.3.0" :	`${V} %`;
+	upsSmartBatteryCapacity					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.1.0" :	`${V} %`;
+	upsSmartBatteryVoltage					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.2.0" :	`${V *10} V`;
+	upsSmartInputLineVoltage				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.1.0" :	`${V /10} V`;
+	upsSmartBatteryFullChargeVoltage		= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.6.0" :	`${V /10} V`;
+	upsSmartInputMaxLineVoltage				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.2.0" :	`${V /10} V`;
+	upsSmartInputMinLineVoltage				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.3.0" :	`${V /10} V`;
+	upsSmartOutputVoltage					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.1.0" :	`${V /10} V`;
+	upsSmartOutputFrequency					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.4.2.2.0" :	`${V /10} Hz`;
+	upsSmartInputFrequency					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.4.0" :	`${V /10} Hz`;
+	upsSmartBatteryTemperature				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.3.0" :	`${V /10} °C`;
+	upsSmartBatteryReplaceIndicator			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.5.0" :	V === 0 ? "-" : "+";
+	upsSmartBatteryCurrent					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.7.0" :	0 <V ? `${V} %` : "-";
+	upsSmartBatteryRunTimeRemaining			= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.2.4.0" :	0 <V ? `${V} sec` : "-";
+	upsBaseBatteryTimeOnBattery				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.2.0" :	0 <V ? `${V} sec` : "-";
+	upsBaseBatteryStatus					= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.2.1.1.0" :	V === 0 ? "excelent" : V === 1 ? "good" : V === 2 ? "normal" : V === 3 ? "low" : `undefined(${V})`;
+	upsSmartInputLineFailCause				= V => V === undefined ? "1.3.6.1.4.1.935.1.1.1.3.2.5.0" :	V === 1 ? "no transfer yet" :
+																										V === 2 ? "transfer to battery is caused by an over voltage greater than the high transfer voltage" :
+																										V === 3 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
+																										V === 4 ? "the duration of the outage is greater than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
+																										V === 5 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and the low transfer voltage" :
+																										V === 6 ? "the duration of the outage is less than five seconds and the line voltage is between 40 percent of the rated output voltage and ground" :
+																										`undefined(${V})`;
+	oidMapper = {
+
+		"1.3.6.1.4.1.935.1.1.1.1.1.1.0":	"upsBaseIdentModel",
+		"1.3.6.1.4.1.935.1.1.1.3.1.1.0":	"upsBaseInputPhase",
+		"1.3.6.1.4.1.935.1.1.1.4.1.1.0":	"upsBaseOutputStatus",
+		"1.3.6.1.4.1.935.1.1.1.4.1.2.0":	"upsBaseOutputPhase",
+		"1.3.6.1.4.1.935.1.1.1.4.2.3.0":	"upsSmartOutputLoad",
+		"1.3.6.1.4.1.935.1.1.1.2.2.1.0":	"upsSmartBatteryCapacity",
+		"1.3.6.1.4.1.935.1.1.1.2.2.2.0":	"upsSmartBatteryVoltage",
+		"1.3.6.1.4.1.935.1.1.1.3.2.1.0":	"upsSmartInputLineVoltage",
+		"1.3.6.1.4.1.935.1.1.1.2.2.6.0":	"upsSmartBatteryFullChargeVoltage",
+		"1.3.6.1.4.1.935.1.1.1.3.2.2.0":	"upsSmartInputMaxLineVoltage",
+		"1.3.6.1.4.1.935.1.1.1.3.2.3.0":	"upsSmartInputMinLineVoltage",
+		"1.3.6.1.4.1.935.1.1.1.4.2.1.0":	"upsSmartOutputVoltage",
+		"1.3.6.1.4.1.935.1.1.1.4.2.2.0":	"upsSmartOutputFrequency",
+		"1.3.6.1.4.1.935.1.1.1.3.2.4.0":	"upsSmartInputFrequency",
+		"1.3.6.1.4.1.935.1.1.1.2.2.3.0":	"upsSmartBatteryTemperature",
+		"1.3.6.1.4.1.935.1.1.1.2.2.5.0":	"upsSmartBatteryReplaceIndicator",
+		"1.3.6.1.4.1.935.1.1.1.2.2.7.0":	"upsSmartBatteryCurrent",
+		"1.3.6.1.4.1.935.1.1.1.2.2.4.0":	"upsSmartBatteryRunTimeRemaining",
+		"1.3.6.1.4.1.935.1.1.1.2.1.2.0":	"upsBaseBatteryTimeOnBattery",
+		"1.3.6.1.4.1.935.1.1.1.2.1.1.0":	"upsBaseBatteryStatus",
+		"1.3.6.1.4.1.935.1.1.1.3.2.5.0":	"upsSmartInputLineFailCause",
+	}
+	oidDescription = {
+
+		upsBaseIdentModel:					"The UPS model name (e.g. 'Intelligent 8000E 900VA').",
+		upsBaseInputPhase:					"The current AC input phase.",
+		upsBaseOutputStatus:				"The current state of the UPS. If the UPS is unable to determine the state of the UPS this variable is set to unknown(1).",
+		upsBaseOutputPhase:					"The current output phase.",
+		upsSmartOutputLoad:					"The current UPS load expressed in percent of rated capacity.",
+		upsSmartBatteryCapacity:			"The remaining battery capacity expressed in percent of full capacity.",
+		upsSmartBatteryVoltage:				"The current battery voltage expressed in 1/10 VDC.",
+		upsSmartInputLineVoltage:			"The current utility line voltage in 1/10 VAC.",
+		upsSmartBatteryFullChargeVoltage:	"The fully charged battery voltage of the battery system used in the UPS, expressed in tenths of a volt.",
+		upsSmartInputMaxLineVoltage:		"The maximum utility line voltage in 1/10 VAC over the previous 1 minute period.",
+		upsSmartInputMinLineVoltage:		"The minimum utility line voltage in 1/10 VAC over the previous 1 minute period.",
+		upsSmartOutputVoltage:				"The output voltage of the UPS system in 1/10 VAC.",
+		upsSmartOutputFrequency:			"The current output frequency of the UPS system in 1/10 Hz.",
+		upsSmartInputFrequency:				"The current input frequency to the UPS system in 1/10 Hz.",
+		upsSmartBatteryTemperature:			"The current internal UPS temperature expressed in tenths of a Celsius degree.",
+		upsSmartBatteryReplaceIndicator:	"Indicates whether the UPS batteries need replacing.",
+		upsSmartBatteryCurrent:				"The current battery current expressed in percent of maximum current.",
+		upsSmartBatteryRunTimeRemaining:	"The UPS battery run time remaining before battery exhaustion, in seconds.",
+		upsBaseBatteryTimeOnBattery:		"The elapsed time in seconds since the UPS has switched to battery power.",
+		upsBaseBatteryStatus:				"The status of the UPS batteries.",
+		upsSmartInputLineFailCause:			"The reason for the occurrence of the last transfer to UPS battery power.",
+	}
+}
+
+
+
+
+
+
+
+
+class Shtyl extends UpsMibHandler {
+
+	deviceName								= V => V === undefined ? "1.3.6.1.4.1.34498.1.2.0" :		`${V}`;
+	upsShtylPositiveHalfBatVoltage			= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.3.0" :	`${V /10} V`;
+	upsShtylPositiveHalfBatCurrent			= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.5.0" :	`${V *10} A`;
+	upsShtylEstimatedChargeRemaining		= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.7.0" :	`${V} %`;
+	upsShtylBatteryTemperature				= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.9.0" :	`${V} °C`;
+	ups2Temperature							= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.1.6.0" :	`${V} °C`;
+	ups2ShtylLoadPercent					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.2.3.0" :	`${V /10} %`;
+	ups2PhaseAInputVoltage					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.2.4.1.0" :	`${V /10} V`;
+	ups2PhaseAInputCurrent					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.4.4.0" :	`${V *10} A`;
+	ups2InputGridFrequency					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.2.4.7.0" :	`${V /10} Hz`;
+	ups2PhaseAOutputVoltage					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.2.6.1.0" :	`${V /10} V`;
+	ups2PhaseAOutputFullCurrent				= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.2.6.4.0" :	`${V /10} A`;
+	upsShtylAllBatVoltage					= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.2.0" :	`${V /10} V`;
+	ups2RatedACVoltage						= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.4.1.0" :	`${V /10} V`;
+	ups2RatedFrequency						= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.4.3.0" :	`${V /10} Hz`;
+	ups2RatedTotalPower						= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.4.4.0" :	`${V} W`;
+	upsShtylEstimatedMinutesRemaining		= V => V === undefined ? "1.3.6.1.4.1.34498.2.6.11.8.0" :	`${V} min`;
+	oidMapper = {
+
+		"1.3.6.1.4.1.34498.1.2.0":			"deviceName",
+		"1.3.6.1.4.1.34498.2.6.11.3.0":		"upsShtylPositiveHalfBatVoltage",
+		"1.3.6.1.4.1.34498.2.6.11.5.0":		"upsShtylPositiveHalfBatCurrent",
+		"1.3.6.1.4.1.34498.2.6.11.7.0":		"upsShtylEstimatedChargeRemaining",
+		"1.3.6.1.4.1.34498.2.6.11.9.0":		"upsShtylBatteryTemperature",
+		"1.3.6.1.4.1.34498.2.6.1.6.0":		"ups2Temperature",
+		"1.3.6.1.4.1.34498.2.6.2.3.0":		"ups2ShtylLoadPercent",
+		"1.3.6.1.4.1.34498.2.6.2.4.1.0":	"ups2PhaseAInputVoltage",
+		"1.3.6.1.4.1.34498.2.6.2.4.4.0":	"ups2PhaseAInputCurrent",
+		"1.3.6.1.4.1.34498.2.6.2.4.7.0":	"ups2InputGridFrequency",
+		"1.3.6.1.4.1.34498.2.6.2.6.1.0":	"ups2PhaseAOutputVoltage",
+		"1.3.6.1.4.1.34498.2.6.2.6.4.0":	"ups2PhaseAOutputFullCurrent",
+		"1.3.6.1.4.1.34498.2.6.11.2.0":		"upsShtylAllBatVoltage",
+		"1.3.6.1.4.1.34498.2.6.4.1.0":		"ups2RatedACVoltage",
+		"1.3.6.1.4.1.34498.2.6.4.3.0":		"ups2RatedFrequency",
+		"1.3.6.1.4.1.34498.2.6.4.4.0":		"ups2RatedTotalPower",
+		"1.3.6.1.4.1.34498.2.6.11.8.0":		"upsShtylEstimatedMinutesRemaining"
+	}
+	oidDescription = {
+
+		deviceName:							"Device Name",
+		upsShtylPositiveHalfBatVoltage:		"Voltage of postive half battery in 0,1 Volt DC",
+		upsShtylPositiveHalfBatCurrent:		"Current of postive half battery in 0,1 Amp DC",
+		upsShtylEstimatedChargeRemaining:	"An estimate of the battery charge remaining expressed as a percent of full charge.",
+		upsShtylBatteryTemperature:			"Battery temperature in Celsium degree",
+		ups2Temperature:					"Temperature, Celsium degree",
+		ups2ShtylLoadPercent:				"UPS load in 0.1 percent",
+		ups2PhaseAInputVoltage:				"UPS shtyl phase A input voltage in 0,1 Vold DC",
+		ups2PhaseAInputCurrent:				"UPS shtyl phase A input current in 0,1 Amp AC",
+		ups2InputGridFrequency:				"UPS shtyl input frequency in 0,1 Hz",
+		ups2PhaseAOutputVoltage:			"UPS shtyl phase A output voltage in 0,1 Volt AC",
+		ups2PhaseAOutputFullCurrent:		"UPS shtyl phase A output full current in 0,1 Amp AC",
+		upsShtylAllBatVoltage:				"UPS shtyl all battery voltage in 0,1 Volt DC",
+		ups2RatedACVoltage:					"Rated AC voltage in 0,1 Volt AC",
+		ups2RatedFrequency:					"Rated frequency in 0,1 Hertz",
+		ups2RatedTotalPower:				"Rated total power in Wats",
+		upsShtylEstimatedMinutesRemaining:	"An estimate of the time to battery charge depletion under the present load conditions if the utility power is off and remains off, or if it were to be lost and remain off."
+	}
+}
+
+
+
+
+
+
+
+
 module.exports.XPPC = XPPC;
+module.exports.Shtyl = Shtyl;
 
 
 

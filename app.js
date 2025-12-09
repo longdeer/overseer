@@ -10,8 +10,8 @@ const hostPort = process.env.LISTEN_PORT;
 const appName = process.env.APP_NAME;
 const Reader = require("./modules/reader.js");
 const loggy = require("./modules/loggy.js").getRotatedLoggy(process.env.LOGGY_FOLDER, appName);
-const XPPC = require("./modules/snmp.js").XPPC;
-const snmpPoller = new XPPC(loggy);
+const Shtyl = require("./modules/snmp.js").Shtyl;
+const snmpPoller = new Shtyl(loggy);
 const SNMPOptions = { timeout: 500, retries: 0 };
 const serverOptions = {
 
